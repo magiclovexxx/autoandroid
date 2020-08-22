@@ -18,7 +18,6 @@ package com.startup.shoppyauto;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -31,14 +30,20 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
+import com.startup.shoppyauto.Retrofit2.Contact;
+import com.startup.shoppyauto.Retrofit2.LoadData;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import retrofit2.Retrofit;
+
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -55,6 +60,7 @@ public class AutoLogin {
         try {
             mDevice.wakeUp();
             Log.d("SonLv", "wakeUp");
+            Log.d("toantran", "toantran");
         } catch (Exception e) {
             Log.d("SonLv", "Exception: " + e.getMessage());
         }
@@ -69,6 +75,12 @@ public class AutoLogin {
 
     public void autoView() {
         Log.d("SonLv", "autoView: " + step);
+
+        LoadData data2 = new LoadData();
+       String jsonStr = data2.loadJSON();
+        Log.d("dataRetrofit: " , String.valueOf(jsonStr));
+
+    /*
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
             return;
@@ -81,7 +93,8 @@ public class AutoLogin {
             e.printStackTrace();
         }
 
-        checkView();
+
+      //  checkView();
         try {
             switch (step) {
                 case 0:
@@ -98,9 +111,9 @@ public class AutoLogin {
             }
         } catch (Exception e) {
 
-        }
+        }*/
         sleep(5000);
-        autoView();
+      //  autoView();
     }
 
 

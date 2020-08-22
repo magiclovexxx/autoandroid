@@ -72,34 +72,7 @@ public class AutoView {
 
     public void autoView() {
 
-        ConvertMoneyService convertMoneyService;
-        convertMoneyService = new Retrofit.Builder()
-                .baseUrl("http://apilayer.net/") // API base url
-                .addConverterFactory(GsonConverterFactory.create()) // Factory phụ thuộc vào format trả về
-                .build()
-                .create(ConvertMoneyService.class);
 
-        String ACCESS_KEY_API_CURRENCY = "843d4d34ae72b3882e3db642c51e28e6";
-        convertMoneyService.convertVNDtoUSD(ACCESS_KEY_API_CURRENCY,"VND", "USD", 1)
-                .enqueue(new Callback<ResponseCurrency>() {
-                    @Override
-                    public void onResponse() {
-                        onResponse(, );
-                    }
-
-                    @Override
-                    public void onResponse(Call<ResponseCurrency> call, Response<ResponseCurrency> response)
-                    // Data trả về
-                    ResponseCurrency res = response.body()
-                    //Tỉ giá mình lấy được
-                    exchangeRate = res.getQuotes().getUSDVND();
-                }
-
-        @Override
-        public void onFailure(Call<ResponseCurrency> call, Throwable t) {
-        }
-    });
-        
         Log.d("SonLv", "autoView: " + step);
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
