@@ -8,7 +8,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.aquery.AQuery;
+import com.aquery.listener.QueryNetworkListener;
+import com.startup.shoppyauto.Retrofit2.APIService;
+import com.startup.shoppyauto.Retrofit2.Contact;
+import com.startup.shoppyauto.Retrofit2.RetrofitClient;
+
 import java.io.OutputStream;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +38,44 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnStart.setText(getString(R.string.description));
+        //loadData();
+        getData();
     }
+
+    public  void  loadData(){
+        AQuery aQuery=new AQuery(this);
+        aQuery.ajax("http://zinbee.ddns.net:3000/getdata").get().response(new QueryNetworkListener() {
+            @Override
+            public void response(String s, Throwable throwable) {
+                Log.d("SonLv","res"+s);
+            }
+        });
+    }
+
+    public void  getData(){
+        Log.d("SonLv","getdata");
+        APIService apiService= RetrofitClient.getClient().create(APIService.class);
+        apiService.getData().enqueue(new Callback<List<Contact>>() {
+            @Override
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                //Nếu ok thì về dây
+               Log.d("SonLv","res: "+response.body().size());
+
+                for (int i = 0; i < response.body().size(); i++) {
+                    Log.d("SonLv","name: "+response.body().get(i).getName());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+//Nếu có lỗi thì về ây
+                Log.d("SonLv","error: "+t.getMessage());
+            }
+        });
+
+    }
+
 
     public void callAuto(){
         try {

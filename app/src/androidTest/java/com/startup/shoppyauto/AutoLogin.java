@@ -30,17 +30,20 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
+import com.startup.shoppyauto.Retrofit2.APIService;
 import com.startup.shoppyauto.Retrofit2.Contact;
-import com.startup.shoppyauto.Retrofit2.ListContact;
-import com.startup.shoppyauto.Retrofit2.LoadData;
+import com.startup.shoppyauto.Retrofit2.RetrofitClient;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -74,14 +77,12 @@ public class AutoLogin {
         autoView();
     }
 
+
     public void autoView() {
         Log.d("SonLv", "autoView: " + step);
-        ListContact data3 = new ListContact();
-       data3.getCont()  ;
-        LoadData data2 = new LoadData();
-       ListContact jsonStr = data2.loadJSON();
-        Log.d("dataRetrofit: " , String.valueOf(jsonStr));
-
+        List<Contact> data33 = new ArrayList<>();
+        data33 = RetrofitClient.getDataUrl();
+        Log.d("SonLv", "data333: " + data33);
     /*
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
@@ -117,6 +118,7 @@ public class AutoLogin {
         sleep(5000);
       //  autoView();
     }
+
 
 
     public void searchProduct() {

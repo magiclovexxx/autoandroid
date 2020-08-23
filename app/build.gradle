@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'org.hamcrest:hamcrest-integration:1.3'
 
+    implementation 'com.github.ar-android:AQuery:v1.0.0'
+
 }
