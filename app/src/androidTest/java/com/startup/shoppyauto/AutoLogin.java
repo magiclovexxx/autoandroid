@@ -31,6 +31,7 @@ import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
 import com.startup.shoppyauto.Retrofit2.Contact;
+import com.startup.shoppyauto.Retrofit2.ListContact;
 import com.startup.shoppyauto.Retrofit2.LoadData;
 
 import org.junit.Before;
@@ -75,9 +76,10 @@ public class AutoLogin {
 
     public void autoView() {
         Log.d("SonLv", "autoView: " + step);
-
+        ListContact data3 = new ListContact();
+       data3.getCont()  ;
         LoadData data2 = new LoadData();
-       String jsonStr = data2.loadJSON();
+       ListContact jsonStr = data2.loadJSON();
         Log.d("dataRetrofit: " , String.valueOf(jsonStr));
 
     /*

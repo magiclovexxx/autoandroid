@@ -2,9 +2,6 @@ package com.startup.shoppyauto.Retrofit2;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -16,13 +13,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoadData {
 
-    public List<Contact> data ;
+    public ListContact data ;
     public String jsonStr = null;
 
-    public LoadData() {
-    }
-
-    public String loadJSON(){
+    public ListContact loadJSON(){
 
         OkHttpClient builder = new OkHttpClient.Builder()
                 .readTimeout(5000, TimeUnit.MILLISECONDS)
@@ -33,7 +27,7 @@ public class LoadData {
        // Gson gson = new GsonBuilder().setLenient().create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.60:3000")
+                .baseUrl("http://zinbee.ddns.net:3000/")
                 .client(builder)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -43,14 +37,11 @@ public class LoadData {
         call.enqueue(new Callback<ListContact>() {
             @Override
             public void onResponse(Call<ListContact> call, Response<ListContact> response) {
-                ListContact  jsonResponse = response.body();
-          data = new ArrayList<>(Arrays.asList(jsonResponse.getCont()));
+               // ListContact  jsonResponse = response.body();
+                data  = response.body();
+         // data = new ArrayList<>(Arrays.asList(jsonResponse.getCont()));
 
-              for ( Contact c: data){
-                  jsonStr += "Name: " + c.getName() + "\n\n";
-                  jsonStr += "Email: " + c.getEmail() + "\n\n";
-                  jsonStr += "Mobile: " + c.getMobile() + "\n\n";
-              }
+
             }
 
             @Override
@@ -62,7 +53,7 @@ public class LoadData {
         //RequestRe request = sRetrofit.create(RequestRe.class);
         Log.d("checkkk",
                 String.valueOf(data));
-        return jsonStr;
+        return data;
     }
 
 
