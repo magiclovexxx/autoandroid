@@ -39,9 +39,11 @@ public class RetrofitClient {
                 Log.d("SonLv","res: "+ response.body().size());
                 for (int i = 0; i < response.body().size(); i++) {
                     dataContact.add(response.body().get(i));
-                    Log.d("SonLv","name: "+dataContact.get(i).getName());
-                }
 
+                    // Đến đây dataContact vẫn có giá trị đúng
+                    Log.d("SonLv","name: "+dataContact.get(i).getName());
+
+                }
             }
 
             @Override
@@ -50,6 +52,7 @@ public class RetrofitClient {
                 Log.d("SonLv","error: "+t.getMessage());
             }
         });
+        // Đến đây dataContact là nó không có giá trị gì
         Log.d("SonLv","dataContact: "+ dataContact.size());
         return dataContact;
     }

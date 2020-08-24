@@ -54,13 +54,15 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 public class AutoLogin {
     String TAG = "SonLv";
     private UiDevice mDevice;
-
+    List<Contact> dataContact = new ArrayList<>();
     int step = 0;
     boolean isFinish = false;
+
 
     @Before
     public void startMainActivityFromHomeScreen() {
         mDevice = UiDevice.getInstance(getInstrumentation());
+        loadDataApi();
         try {
             mDevice.wakeUp();
             Log.d("SonLv", "wakeUp");
@@ -80,9 +82,10 @@ public class AutoLogin {
 
     public void autoView() {
         Log.d("SonLv", "autoView: " + step);
-        List<Contact> data33 = new ArrayList<>();
-        data33 = RetrofitClient.getDataUrl();
-        Log.d("SonLv", "data333: " + data33);
+      //  data33 = RetrofitClient.getDataUrl();
+        Log.d("SonLv", "dataContact: " + dataContact.get(1).getEmail());
+
+
     /*
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
@@ -119,7 +122,34 @@ public class AutoLogin {
       //  autoView();
     }
 
+public  void loadDataApi(){
+    APIService apiService= RetrofitClient.getClient().create(APIService.class);
+    apiService.getData().enqueue(new Callback<List<Contact>>() {
+        @Override
+        public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+            //Nếu ok thì về dây
 
+            Log.d("SonLv","data22: ");
+
+            Log.d("SonLv","res: "+ response.body().size());
+            for (int i = 0; i < response.body().size(); i++) {
+                dataContact.addAll(response.body());
+
+                // Đến đây dataContact vẫn có giá trị đúng
+                Log.d("SonLv","name: "+dataContact.get(i).getName());
+
+            }
+        }
+
+        @Override
+        public void onFailure(Call<List<Contact>> call, Throwable t) {
+//Nếu có lỗi thì về ây
+            Log.d("SonLv","error: "+t.getMessage());
+        }
+    });
+    // Đến đây dataContact là nó không có giá trị gì
+
+}
 
     public void searchProduct() {
         UiObject2 edtSearch=mDevice.findObject(By.clazz(EditText.class));
