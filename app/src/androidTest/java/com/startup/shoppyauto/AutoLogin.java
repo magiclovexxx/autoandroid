@@ -33,11 +33,13 @@ import androidx.test.uiautomator.UiSelector;
 import com.startup.shoppyauto.Retrofit2.APIService;
 import com.startup.shoppyauto.Retrofit2.Contact;
 import com.startup.shoppyauto.Retrofit2.RetrofitClient;
+import com.startup.shoppyauto.Retrofit2.Schedules;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,9 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 public class AutoLogin {
     String TAG = "SonLv";
     private UiDevice mDevice;
+
     List<Contact> dataContact = new ArrayList<>();
+    List<Schedules> dataSchedules = new ArrayList<>();
     int step = 0;
     boolean isFinish = false;
 
@@ -62,11 +66,17 @@ public class AutoLogin {
     @Before
     public void startMainActivityFromHomeScreen() {
         mDevice = UiDevice.getInstance(getInstrumentation());
-        loadDataApi();
+
+       // Get data from server
+      //  loadDataApi();
+
+        // Lấy schedule cần tương tác
+        getSchedules();
+
         try {
             mDevice.wakeUp();
             Log.d("SonLv", "wakeUp");
-            Log.d("toantran", "toantran");
+
         } catch (Exception e) {
             Log.d("SonLv", "Exception: " + e.getMessage());
         }
@@ -82,106 +92,105 @@ public class AutoLogin {
 
     public void autoView() {
         Log.d("SonLv", "autoView: " + step);
-      //  data33 = RetrofitClient.getDataUrl();
-        Log.d("SonLv", "dataContact: " + dataContact.get(1).getEmail());
+
+        Log.d("SonLv", "getCategory: " + dataSchedules.get(0).getCategory());
 
 
-    /*
+
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
             return;
         }
 
 
-        try {
+    /*    try {
             mDevice.wakeUp(); // sang màn hình, mở khoá màn hình
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
+        } */
 
 
       //  checkView();
-        try {
-            switch (step) {
-                case 0:
-                    UiObject2 btnSearch = mDevice.findObject(By.text("Bộ Sưu Tập Đón Thu - Giảm Đến 60%"));
-                    if (btnSearch != null) {
-                        btnSearch.click();
-                        step = 1;
-                    }
-                    break;
+        searchProduct();
 
-                case 1:
-                    searchProduct();
-                    break;
-            }
-        } catch (Exception e) {
-
-        }*/
         sleep(5000);
       //  autoView();
     }
 
-public  void loadDataApi(){
-    APIService apiService= RetrofitClient.getClient().create(APIService.class);
-    apiService.getData().enqueue(new Callback<List<Contact>>() {
-        @Override
-        public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-            //Nếu ok thì về dây
+    public  void loadDataApi(){
+        APIService apiService= RetrofitClient.getClient().create(APIService.class);
+        apiService.getData().enqueue(new Callback<List<Contact>>() {
+            @Override
+            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                //Nếu ok thì về dây
 
-            Log.d("SonLv","data22: ");
+                if(response.body().size()>0){
+                    for (int i = 0; i < response.body().size(); i++) {
+                        dataContact.addAll(response.body());
 
-            Log.d("SonLv","res: "+ response.body().size());
-            for (int i = 0; i < response.body().size(); i++) {
-                dataContact.addAll(response.body());
+                        // Đến đây dataContact vẫn có giá trị đúng
+                        Log.d("SonLv","name: "+dataContact.get(i).getName());
 
-                // Đến đây dataContact vẫn có giá trị đúng
-                Log.d("SonLv","name: "+dataContact.get(i).getName());
+                    }
+                }
 
             }
-        }
 
-        @Override
-        public void onFailure(Call<List<Contact>> call, Throwable t) {
-//Nếu có lỗi thì về ây
-            Log.d("SonLv","error: "+t.getMessage());
-        }
-    });
-    // Đến đây dataContact là nó không có giá trị gì
+            @Override
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+    //Nếu có lỗi thì về ây
+                Log.d("SonLv","error: "+t.getMessage());
+            }
+        });
+        // Đến đây dataContact là nó không có giá trị gì
 
-}
+    }
+
+    public  void getSchedules(){
+        APIService apiService= RetrofitClient.getClient().create(APIService.class);
+        apiService.getSchedules(1,"100010760317952").enqueue(new Callback<List<Schedules>>() {
+            @Override
+            public void onResponse(Call<List<Schedules>> call, Response<List<Schedules>> response) {
+                //Nếu ok thì về dây
+
+                if(response.body().size() > 1){
+                    for (int i = 0; i < response.body().size(); i++) {
+                        dataSchedules.addAll(response.body());
+
+                        // Đến đây dataContact vẫn có giá trị đúng
+                        Log.d("SonLv","accountId: "+ dataSchedules.get(i).getAccountId());
+
+                    }
+                }else {
+                    dataSchedules.addAll(response.body());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Schedules>> call, Throwable t) {
+            //Nếu có lỗi thì về ây
+                Log.d("SonLv","error: "+t.getMessage());
+            }
+        });
+
+    }
+
 
     public void searchProduct() {
-        UiObject2 edtSearch=mDevice.findObject(By.clazz(EditText.class));
-        if (edtSearch!=null){
-            edtSearch.setText("Ví Nữ");
-            sleep();
-        }
-        UiObject2  btnSubmit = mDevice.findObject(By.res("com.google.android.inputmethod.latin:id/key_pos_ime_action"));
-
-        if(btnSubmit==null)btnSubmit = mDevice.findObject(By.res("com.startup.shoppyauto:id/btnStart"));
-
-        if(btnSubmit==null)btnSubmit = mDevice.findObject(By.text("START"));
-
-        if(btnSubmit==null)btnSubmit = mDevice.findObject(By.desc("OK"));
-
-        if (btnSubmit!=null){
-            btnSubmit.click();
-            step = 2;
-        }
 
         try {
             UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
             if (appViews1 == null) return;
-            appViews1.scrollTextIntoView("Ví nữ cầm tay mini đẹp MAVI VD216");
+            appViews1.scrollTextIntoView("Thích");
             Log.d("SonLv", "Scroll filter");
         } catch (UiObjectNotFoundException  e) {
             Log.d("SonLv", "Exception: " + e.getMessage());
         }
-        UiObject2  view = mDevice.findObject(By.text("Ví nữ cầm tay mini đẹp MAVI VD216"));
+        UiObject2  view = mDevice.findObject(By.text("Thích"));
         if (view != null) {
             view.click();
-            Log.d("SonLv", "Click Product");
+            Log.d("SonLv", "Click Like");
             step = 3;
             isFinish=true;
         }

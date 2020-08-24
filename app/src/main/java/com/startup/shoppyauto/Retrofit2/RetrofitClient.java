@@ -17,7 +17,7 @@ public class RetrofitClient {
     public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://zinbee.ddns.net:3000")
+                    .baseUrl("http://tangtuongtac.net")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }

@@ -11,9 +11,14 @@ import retrofit2.http.Query;
 
 public interface APIService {
 
-    @GET("/getdata")
+    @GET("/api_mobile/test1")
     Call<List<Contact>> getData();
 
-    @GET("/getdata2")
-    Call<List<Contact>> getData2(@Query("id") String id, @Query("name") String name);
+    @GET("/api_mobile/data")
+    Call<List<Schedules>> getSchedules(@Query("device") int device, @Query("fbid") String fbid);
+
+    @FormUrlEncoded
+    @POST("user/edit")
+    Call<Schedules> postSchedules(@Field("first_name") String first, @Field("last_name") String last);
+
 }
