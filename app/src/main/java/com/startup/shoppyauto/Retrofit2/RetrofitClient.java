@@ -34,9 +34,7 @@ public class RetrofitClient {
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
                 //Nếu ok thì về dây
 
-                Log.d("SonLv","data22: ");
-
-                Log.d("SonLv","res: "+ response.body().size());
+            //    Log.d("SonLv","res: "+ response.body().size());
                 for (int i = 0; i < response.body().size(); i++) {
                     dataContact.add(response.body().get(i));
 

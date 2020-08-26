@@ -18,8 +18,9 @@ package com.startup.shoppyauto;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.RemoteException;
 import android.util.Log;
-import android.widget.EditText;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
@@ -39,9 +40,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,11 +55,12 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
 public class AutoLogin {
-    String TAG = "SonLv";
+    String TAG = "ToanTQ";
     private UiDevice mDevice;
 
     List<Contact> dataContact = new ArrayList<>();
     List<Schedules> dataSchedules = new ArrayList<>();
+    String dataUpdateResultSchedules ;
     int step = 0;
     boolean isFinish = false;
 
@@ -71,14 +73,14 @@ public class AutoLogin {
       //  loadDataApi();
 
         // Lấy schedule cần tương tác
-        getSchedules();
+
 
         try {
             mDevice.wakeUp();
-            Log.d("SonLv", "wakeUp");
+            Log.d("ToanTQ", "wakeUp");
 
         } catch (Exception e) {
-            Log.d("SonLv", "Exception: " + e.getMessage());
+            Log.d("ToanTQ", "Exception: " + e.getMessage());
         }
 
         oppenAppActivity();
@@ -86,35 +88,99 @@ public class AutoLogin {
 
     @Test
     public void runTesst() {
-        autoView();
+
+        runAllTime();
+
     }
 
+    public void runAllTime(){
+        getSchedules(1,"100010760317952");
+        Log.d("ToanTQ", "dataSchedules: " + dataSchedules.size());
+        while (dataSchedules.size() == 0){
 
-    public void autoView() {
-        Log.d("SonLv", "autoView: " + step);
+        }
+        Log.d("ToanTQ", "bat dau tuong tac: ");
+        if(dataSchedules.size() == 1){
+            autoView(dataSchedules.get(0));
+        }else {
+            for (int i = 0; i < dataSchedules.size(); i++) {
+                autoView(dataSchedules.get(i));
 
-        Log.d("SonLv", "getCategory: " + dataSchedules.get(0).getCategory());
+            }
+        }
 
+        dataSchedules = null;
+        sleep(5000);
+        runAllTime();
 
+    }
+
+    public void autoView(Schedules schedule) {
+
+        Log.d("ToanTQ", "start autoView: ");
 
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
             return;
         }
 
-
-    /*    try {
+        try {
             mDevice.wakeUp(); // sang màn hình, mở khoá màn hình
         } catch (RemoteException e) {
             e.printStackTrace();
-        } */
-
+        }
 
       //  checkView();
-        searchProduct();
 
-        sleep(5000);
-      //  autoView();
+        String linkPost = schedule.getTitle();
+      //  String linkPost = "https://www.facebook.com/224894154970611/posts/760376101422411";
+
+        Log.d(TAG, "Tuong tac: " + schedule.getType());
+
+        startIntentFace(getApplicationContext(),linkPost);
+
+        if(schedule.getType().equals("bulk_like")){
+            int likeResult = likePost();
+            Log.d(TAG, "Ket qua like : " + likePost());
+            updateResultSchedules(1,"12345",likeResult);
+            Log.d(TAG, "Dữ liệu gửi lên v : " + dataUpdateResultSchedules);
+        }
+
+        if(schedule.getType().equals("seeding") ){
+            Log.d(TAG, "Bat dau seeding: ");
+
+            String[] ArrayMessenger = new String[0];
+
+            // Mảng các comment
+            ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
+            Log.d(TAG, "tin nhan comment: " + dataSchedules.get(0).getMessage().toString());
+            // Lấy ngẫu nhiên 1 comment
+
+            Log.d(TAG, "Ket qua seeding: " +  commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length)]));
+        }
+
+        if(schedule.getType().equals("bulk_share")){
+            sharePost();
+            Log.d(TAG, "Ket qua share : " + sharePost());
+        }
+
+        sleep(50000);
+       // autoView(schedule);
+    }
+
+    public  void  updateResultSchedules (int device, String fbid, int result){
+        APIService apiService= RetrofitClient.getClient().create(APIService.class);
+        apiService.updateResultSchedules(device,fbid,result).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                dataUpdateResultSchedules = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 
     public  void loadDataApi(){
@@ -129,7 +195,7 @@ public class AutoLogin {
                         dataContact.addAll(response.body());
 
                         // Đến đây dataContact vẫn có giá trị đúng
-                        Log.d("SonLv","name: "+dataContact.get(i).getName());
+                  //      Log.d("ToanTQ","name: "+dataContact.get(i).getName());
 
                     }
                 }
@@ -139,16 +205,16 @@ public class AutoLogin {
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
     //Nếu có lỗi thì về ây
-                Log.d("SonLv","error: "+t.getMessage());
+                Log.d("ToanTQ","error: "+t.getMessage());
             }
         });
         // Đến đây dataContact là nó không có giá trị gì
 
     }
 
-    public  void getSchedules(){
+    public  void getSchedules(int device, String fbid){
         APIService apiService= RetrofitClient.getClient().create(APIService.class);
-        apiService.getSchedules(1,"100010760317952").enqueue(new Callback<List<Schedules>>() {
+        apiService.getSchedules(device,fbid).enqueue(new Callback<List<Schedules>>() {
             @Override
             public void onResponse(Call<List<Schedules>> call, Response<List<Schedules>> response) {
                 //Nếu ok thì về dây
@@ -158,7 +224,7 @@ public class AutoLogin {
                         dataSchedules.addAll(response.body());
 
                         // Đến đây dataContact vẫn có giá trị đúng
-                        Log.d("SonLv","accountId: "+ dataSchedules.get(i).getAccountId());
+                   //     Log.d("ToanTQ","Link post: "+ dataSchedules.get(i).getTitle());
 
                     }
                 }else {
@@ -170,7 +236,7 @@ public class AutoLogin {
             @Override
             public void onFailure(Call<List<Schedules>> call, Throwable t) {
             //Nếu có lỗi thì về ây
-                Log.d("SonLv","error: "+t.getMessage());
+                Log.d("ToanTQ","error: "+t.getMessage());
             }
         });
 
@@ -183,19 +249,179 @@ public class AutoLogin {
             UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
             if (appViews1 == null) return;
             appViews1.scrollTextIntoView("Thích");
-            Log.d("SonLv", "Scroll filter");
+            Log.d("ToanTQ", "Scroll filter");
         } catch (UiObjectNotFoundException  e) {
-            Log.d("SonLv", "Exception: " + e.getMessage());
+            Log.d("ToanTQ", "Exception: " + e.getMessage());
         }
         UiObject2  view = mDevice.findObject(By.text("Thích"));
         if (view != null) {
             view.click();
-            Log.d("SonLv", "Click Like");
-            step = 3;
-            isFinish=true;
+            Log.d("ToanTQ", "Click Like");
+
         }
 
     }
+
+    private static int ranInt(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+    public int sharePost() {
+        UiObject2  view = mDevice.findObject(By.text("Chia sẻ"));
+        if (view != null) {
+            view.click();
+            Log.d("ToanTQ", "Click Chia sẻ");
+            sleep(ranInt(1000,3000));
+            UiObject2 shareNow  = mDevice.findObject(By.desc("CHIA SẺ NGAY"));
+            shareNow.click();;
+
+        }else{
+            try {
+                UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+                if (appViews1 == null) return 0;
+                appViews1.scrollTextIntoView("Chia sẻ");
+                Log.d("ToanTQ", "Scroll tìm nút share");
+            } catch (UiObjectNotFoundException  e) {
+                Log.d("ToanTQ", "Exception: " + e.getMessage());
+            }
+            
+            view = mDevice.findObject(By.text("Chia sẻ"));
+            if (view != null) {
+                view.click();
+                Log.d("ToanTQ", "Click Chia sẻ");
+                sleep(ranInt(1000,3000));
+                UiObject2 shareNow  = mDevice.findObject(By.desc("CHIA SẺ NGAY"));
+                shareNow.click();;
+
+            }else {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
+
+    public int likePost() {
+
+        sleep(ranInt(6000,9000)) ;
+        UiObject2 view = mDevice.findObject(By.text("Thích"));
+        Log.d("ToanTQ", "view Like: " + view);
+        if (view != null) {
+            sleep(ranInt(1000,3000)) ;
+            view.click();
+            Log.d("ToanTQ", "Click Like");
+
+        }else {
+            try {
+
+                UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+                if (appViews1 == null) return 0;
+                appViews1.scrollTextIntoView("Thích");
+                Log.d("ToanTQ", "Scroll tìm nút Like");
+
+                view = mDevice.findObject(By.text("Thích"));
+                if (view != null) {
+                    view.click();
+                    Log.d("ToanTQ", "Click Like 222" );
+                }
+
+            } catch (UiObjectNotFoundException e) {
+                Log.d("ToanTQ", "Exception: " + e.getMessage());
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
+    public int commentPost(String messageComment) {
+
+        sleep(ranInt(1000,3000));
+        UiObject2  view = mDevice.findObject(By.text("Bình luận"));
+        if (view != null) {
+            view.click();
+            Log.d("ToanTQ", "Click Bình luận");
+            sleep(ranInt(1000,3000));
+
+            UiObject2 edtSearch=mDevice.findObject(By.text("Viết bình luận..."));
+            if (edtSearch!=null){
+                edtSearch.setText(messageComment);
+            }
+            sleep(ranInt(1000,3000));
+
+            UiObject2 edtSent = mDevice.findObject(By.desc("Gửi"));
+
+            if (edtSent!=null){
+                edtSent.click();
+                Log.d("ToanTQ", "Click Gửi");
+            }
+
+        }else {
+            Log.d("ToanTQ", "Scroll tim nut comment");
+            try {
+                UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+                if (appViews1 == null) return 0;
+                appViews1.scrollTextIntoView("Bình luận");
+                Log.d("ToanTQ", "Scroll tìm nút comment");
+            } catch (UiObjectNotFoundException  e) {
+                Log.d("ToanTQ", "Exception: " + e.getMessage());
+            }
+
+            view = mDevice.findObject(By.text("Bình luận"));
+            if (view != null) {
+                view.click();
+                Log.d("ToanTQ", "Click Bình luận");
+                sleep(ranInt(1000, 3000));
+
+                UiObject2 edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
+                if (edtSearch != null) {
+                    edtSearch.setText(messageComment);
+                }
+                sleep(ranInt(1000, 3000));
+
+                UiObject2 edtSent = mDevice.findObject(By.desc("Gửi"));
+
+                if (edtSent != null) {
+                    edtSent.click();
+                    Log.d("ToanTQ", "Click Gửi");
+                }
+
+                sleep(ranInt(1000, 3000));
+
+            }else  {
+                return 0;
+            }
+
+
+        }
+        return 1;
+
+    }
+
+
+
+    public static void startIntentFace(Context context,String uriContent) {
+        Uri uri = Uri.parse(uriContent);
+        if (uri == null) return ;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.setPackage("com.facebook.katana");
+        intent.setData(uri);
+
+        context.startActivity(intent);
+
+    }
+
 
     public void checkView() {
         Log.d("checkView", "processView: " + step);
@@ -253,7 +479,7 @@ public class AutoLogin {
 
 
     public void oppenMainActivity(String sms) {
-        Log.d("SonLv", "sms: " + sms);
+        Log.d("ToanTQ", "sms: " + sms);
         isFinish = true;
 
         mDevice.pressHome();
