@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <Button
@@ -12,7 +13,39 @@
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="OK"
+        android:contentDescription="@string/ok"
         android:text="@string/description" />
+
+     <TextView
+        android:id="@+id/manager"
+         android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:textSize="30dp"
+         android:fontFamily="sans-serif"
+        android:layout_weight="1"
+        android:text="QUẢN LÝ" />
+
+    <TextView
+        android:id="@+id/device"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/manager"
+        android:layout_weight="1"
+        android:text="THIẾT BỊ" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/device"
+        android:layout_weight="1"
+        android:text="SỐ" />
 
 </RelativeLayout>

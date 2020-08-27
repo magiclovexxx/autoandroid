@@ -67,7 +67,7 @@ public class AutoLogin {
 
     @Before
     public void startMainActivityFromHomeScreen() {
-        mDevice = UiDevice.getInstance(getInstrumentation())
+        mDevice = UiDevice.getInstance(getInstrumentation());
 
         try {
             mDevice.wakeUp();
@@ -149,8 +149,8 @@ public class AutoLogin {
             ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
             Log.d(TAG, "tin nhan comment: " + dataSchedules.get(0).getMessage().toString());
             // Lấy ngẫu nhiên 1 comment
-
-            Log.d(TAG, "Ket qua seeding: " +  commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length)]));
+            Log.d(TAG, "Tin nhan seeding: " +  ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
+            Log.d(TAG, "Ket qua seeding: " +  commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]));
         }
 
         if(schedule.getType().equals("bulk_share")){
@@ -337,6 +337,7 @@ public class AutoLogin {
 
     public int commentPost(String messageComment) {
 
+            if(messageComment.equals(null)) return  0;
         sleep(ranInt(1000,3000));
         UiObject2  view = mDevice.findObject(By.text("Bình luận"));
         if (view != null) {

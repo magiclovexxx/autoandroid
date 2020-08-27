@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnStart.setText(getString(R.string.description));
-        //loadData();
-        getData();
+
+       // getData();
     }
 
     public  void  loadData(){
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public void callAuto(){
         try {
             OutputStream out = new ProcessBuilder(new String[0]).redirectErrorStream(true).command(new String[]{"su"}).start().getOutputStream();
-            out.write("am instrument -w -r   -e debug false -e class 'com.startup.shoppyauto.AutoView' com.startup.shoppyauto.test/androidx.test.runner.AndroidJUnitRunner\n".getBytes("UTF-8"));
+            out.write("am instrument -w -r   -e debug false -e class 'com.startup.shoppyauto.AutoLogin' com.startup.shoppyauto.test/androidx.test.runner.AndroidJUnitRunner\n".getBytes("UTF-8"));
             out.flush();
             out.close();
             showToast("Bắt đầu thực hiện Auto");
