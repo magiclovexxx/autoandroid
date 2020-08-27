@@ -67,13 +67,7 @@ public class AutoLogin {
 
     @Before
     public void startMainActivityFromHomeScreen() {
-        mDevice = UiDevice.getInstance(getInstrumentation());
-
-       // Get data from server
-      //  loadDataApi();
-
-        // Lấy schedule cần tương tác
-
+        mDevice = UiDevice.getInstance(getInstrumentation())
 
         try {
             mDevice.wakeUp();
