@@ -28,11 +28,25 @@ import retrofit2.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     Button btnStart;
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnStart=findViewById(R.id.btnStart);
+       // dataSharePre ();
+        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("url", "teamvietdev.com");
+        editor.putString("name", "Team Việt Dev");
+        editor.putBoolean("active", true);
+        editor.commit();
+
+
+        dataSharePre ();
+
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,29 +54,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Log.d("Toantq", "Start data share pre xxx");
-        btnStart.setText(getString(R.string.description));
 
-    //    dataSharePre ();
+
+
+        btnStart.setText(getString(R.string.description));
     }
 
-    public  void dataSharePre (){
+    public void dataSharePre (){
         Log.d("Toantq", "Start data share pre ");
-        Context context = null;
-        SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("url", "teamvietdev.com");
-        editor.putString("name", "Team Việt Dev");
-        editor.putBoolean("active", true);
-        editor.commit();
 
-        String url = sharedPref.getString("url", "");
-        String name = sharedPref.getString("name", "");
-        boolean active = sharedPref.getBoolean("active", false);
+        String url = sharedPreferences.getString("url", "");
+        String name = sharedPreferences.getString("name", "");
+        boolean active = sharedPreferences.getBoolean("active", false);
 
         Log.d("Toantq", "url " + url);
+        Log.d("Toantq", "name " + name);
+        Log.d("Toantq", "active " + active);
     }
-
 
     public void callAuto(){
         try {

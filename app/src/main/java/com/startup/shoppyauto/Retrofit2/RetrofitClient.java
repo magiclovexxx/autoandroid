@@ -1,4 +1,6 @@
 package com.startup.shoppyauto.Retrofit2;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,6 +26,25 @@ public class RetrofitClient {
         return retrofit;
     }
 
+    public static void dataSharePre(){
+        Log.d("Toantq", "Start data share pre ");
+        Context context = null;
+        SharedPreferences sharedPref ;
+        sharedPref = context.getSharedPreferences("MyPreferences", context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("url", "teamvietdev.com");
+        editor.putString("name", "Team Việt Dev");
+        editor.putBoolean("active", true);
+        editor.commit();
+
+        String url = sharedPref.getString("url", "");
+        String name = sharedPref.getString("name", "");
+        boolean active = sharedPref.getBoolean("active", false);
+
+        Log.d("Toantq", "url " + url);
+    }
+    
     public static ArrayList<Contact> getDataUrl(){
 
          ArrayList<Contact> dataContact = new ArrayList<>();

@@ -16,12 +16,35 @@
 
 package com.startup.shoppyauto;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
+import android.view.Display;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.uiautomator.By;
@@ -40,6 +63,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +77,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -80,8 +110,8 @@ public class AutoLogin {
 
     @Test
     public void runTesst() {
-
-        runAllTime();
+       // dataSharePre();
+      //  runAllTime();
     }
 
     public void runAllTime(){
@@ -92,31 +122,37 @@ public class AutoLogin {
         long end = start + 60000;
 
         while (dataSchedules == null){
-            Log.d("ToanTQ","Đang lấy dữ liệu sv");
+
             if(System.currentTimeMillis() > end) {
                 Log.d("ToanTQ", "Không lấy được dữ liệu từ sv: ");
                 break;
             }
         }
 
-        if(dataSchedules == null) {
-
-        } else if(dataSchedules.size() == 1){
-            Log.d("ToanTQ", "dataschedules size : " + dataSchedules.size());
-            Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(0).getTitle());
-            autoView(dataSchedules.get(0));
-        }else if(dataSchedules.size() > 1){
-            Log.d("ToanTQ", "dataschedules size : " + dataSchedules.size());
-            for (int i = 0; i < dataSchedules.size(); i++) {
-                Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(i).getTitle());
-                autoView(dataSchedules.get(i));
+        if(dataSchedules != null) {
+            if(dataSchedules.size() == 1){
+                autoView(dataSchedules.get(0));
             }
+            if(dataSchedules.size() > 1){
+                for (int i = 0; i < dataSchedules.size(); i++) {
+                    Log.d("ToanTQ", "bat dau tuong tac: " + i);
+                    autoView(dataSchedules.get(i));
+                    sleep(ranInt(5000, 10000));
+                }
+            }
+
         }
 
-        dataSchedules = null;
-        sleep(5000);
+        dataSchedules.clear();
+        sleep(ranInt(10000, 20000));
+        Log.d("ToanTQ", "tuong tac lap lai ");
         runAllTime();
+
     }
+
+
+
+
 
     public void autoView(Schedules schedule) {
 
@@ -133,8 +169,6 @@ public class AutoLogin {
             e.printStackTrace();
         }
 
-      //  checkView();
-
         String linkPost = schedule.getTitle();
       //  String linkPost = "https://www.facebook.com/224894154970611/posts/760376101422411";
 
@@ -143,9 +177,12 @@ public class AutoLogin {
         if(schedule.getType().equals("bulk_like")){
             Log.d(TAG, "Bat dau like: ");
             int likeResult = likePost();
-            updateResultSchedules(1,"12345",schedule.getId(), likeResult);
-            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+            if(likeResult == 1){
+                updateResultSchedules(1,"12345",schedule.getId(), likeResult);
+            }
+            sleep(ranInt(5000, 10000));
 
+            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
         }
 
         if(schedule.getType().equals("seeding") ){
@@ -161,25 +198,26 @@ public class AutoLogin {
             Log.d(TAG, "Tin nhan seeding: " +  ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
             commentResult = commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
 
-            updateResultSchedules(1,"12345",schedule.getId(),commentResult);
-
-            Log.d(TAG, "Ket qua seeding: " + dataUpdateResultSchedules );
+            if(commentResult == 0){
+                updateResultSchedules(1,"12345",schedule.getId(),commentResult);
+            }
         }
 
         if(schedule.getType().equals("bulk_share")){
             int shareResult = 0;
             shareResult = sharePost();
+            if(shareResult == 0);{
+                updateResultSchedules(1,"12345", schedule.getId(),shareResult);
+            }
 
-            updateResultSchedules(1,"12345", schedule.getId(),shareResult);
-            Log.d(TAG, "Ket qua share: " + dataUpdateResultSchedules );
         }
 
-        sleep(50000);
+        sleep(ranInt(5000, 10000));
        // autoView(schedule);
     }
 
     public  void  updateResultSchedules (int device, String fbid, int sid, int result){
-        dataUpdateResultSchedules = null;
+        dataUpdateResultSchedules = "";
         APIService apiService= RetrofitClient.getClient().create(APIService.class);
         apiService.updateResultSchedules(device,fbid,sid,result).enqueue(new Callback<String>() {
             @Override
@@ -224,14 +262,8 @@ public class AutoLogin {
             @Override
             public void onResponse(Call<List<Schedules>> call, Response<List<Schedules>> response) {
                 //Nếu ok thì về dây
-                if(response.body().size() > 1){
-                    for (int i = 0; i < response.body().size(); i++) {
-                        dataSchedules.addAll(response.body());
-                        Log.d("ToanTQ","dataschedule size: "+ dataSchedules.size());
-                    }
-                }else {
-                    dataSchedules.addAll(response.body());
-                }
+                dataSchedules.clear();
+                dataSchedules.addAll(response.body());
             }
 
             @Override
@@ -316,35 +348,31 @@ public class AutoLogin {
 
         Log.d("ToanTQ", "view Like: " + view);
         if (view != null) {
-            Log.d("ToanTQ", "if ");
-
             sleep(ranInt(1000,3000)) ;
             view.click();
             Log.d("ToanTQ", "Click Like");
             return 1;
-
         }else {
             try {
-                Log.d("ToanTQ", "else ");
+
                 UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
                 if (appViews1 == null) return 0;
                 appViews1.scrollTextIntoView("Thích");
                 Log.d("ToanTQ", "Scroll tìm nút Like");
-
                 view = mDevice.findObject(By.text("Thích"));
 
                 if (view != null) {
                     view.click();
                     Log.d("ToanTQ", "Click Like 2" );
+                    return 1;
                 }
 
             } catch (UiObjectNotFoundException e) {
                 Log.d("ToanTQ", "Exception: " + e.getMessage());
-                return 0;
             }
+            Log.d("ToanTQ", "Đéo Like dc" );
+            return 0;
         }
-
-        return 1;
     }
 
     public int commentPost(String messageComment) {
