@@ -18,7 +18,7 @@ public interface APIService {
     Call<List<Schedules>> getSchedules(@Query("device") int device, @Query("fbid") String fbid);
 
     @GET("/api_mobile/updateresult")
-    Call<String> updateResultSchedules(@Query("device") int device, @Query("fbid") String fbid, @Query("result") int result);
+    Call<String> updateResultSchedules(@Query("device") int device, @Query("fbid") String fbid, @Query("sid") int sid, @Query("result") int result);
 
     @FormUrlEncoded
     @POST("user/edit")

@@ -64,7 +64,6 @@ public class AutoLogin {
     int step = 0;
     boolean isFinish = false;
 
-
     @Before
     public void startMainActivityFromHomeScreen() {
         mDevice = UiDevice.getInstance(getInstrumentation());
@@ -76,7 +75,6 @@ public class AutoLogin {
         } catch (Exception e) {
             Log.d("ToanTQ", "Exception: " + e.getMessage());
         }
-
         oppenAppActivity();
     }
 
@@ -87,24 +85,28 @@ public class AutoLogin {
     }
 
     public void runAllTime(){
-        getSchedules(1,"100010760317952");
+
+        getSchedules(1,"12345");
 
         long start = System.currentTimeMillis();
         long end = start + 60000;
 
         while (dataSchedules == null){
+            Log.d("ToanTQ","Đang lấy dữ liệu sv");
             if(System.currentTimeMillis() > end) {
                 Log.d("ToanTQ", "Không lấy được dữ liệu từ sv: ");
                 break;
             }
         }
 
-        Log.d("ToanTQ", "bat dau tuong tac: ");
+        if(dataSchedules == null) {
 
-        if(dataSchedules.size() == 1){
+        } else if(dataSchedules.size() == 1){
+            Log.d("ToanTQ", "dataschedules size : " + dataSchedules.size());
             Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(0).getTitle());
             autoView(dataSchedules.get(0));
         }else if(dataSchedules.size() > 1){
+            Log.d("ToanTQ", "dataschedules size : " + dataSchedules.size());
             for (int i = 0; i < dataSchedules.size(); i++) {
                 Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(i).getTitle());
                 autoView(dataSchedules.get(i));
@@ -114,7 +116,6 @@ public class AutoLogin {
         dataSchedules = null;
         sleep(5000);
         runAllTime();
-
     }
 
     public void autoView(Schedules schedule) {
@@ -142,7 +143,7 @@ public class AutoLogin {
         if(schedule.getType().equals("bulk_like")){
             Log.d(TAG, "Bat dau like: ");
             int likeResult = likePost();
-            updateResultSchedules(1,"12345",likeResult);
+            updateResultSchedules(1,"12345",schedule.getId(), likeResult);
             Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
 
         }
@@ -160,7 +161,7 @@ public class AutoLogin {
             Log.d(TAG, "Tin nhan seeding: " +  ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
             commentResult = commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
 
-            updateResultSchedules(1,"12345",commentResult);
+            updateResultSchedules(1,"12345",schedule.getId(),commentResult);
 
             Log.d(TAG, "Ket qua seeding: " + dataUpdateResultSchedules );
         }
@@ -169,7 +170,7 @@ public class AutoLogin {
             int shareResult = 0;
             shareResult = sharePost();
 
-            updateResultSchedules(1,"12345",shareResult);
+            updateResultSchedules(1,"12345", schedule.getId(),shareResult);
             Log.d(TAG, "Ket qua share: " + dataUpdateResultSchedules );
         }
 
@@ -177,10 +178,10 @@ public class AutoLogin {
        // autoView(schedule);
     }
 
-    public  void  updateResultSchedules (int device, String fbid, int result){
+    public  void  updateResultSchedules (int device, String fbid, int sid, int result){
         dataUpdateResultSchedules = null;
         APIService apiService= RetrofitClient.getClient().create(APIService.class);
-        apiService.updateResultSchedules(device,fbid,result).enqueue(new Callback<String>() {
+        apiService.updateResultSchedules(device,fbid,sid,result).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 dataUpdateResultSchedules = response.body();
@@ -226,6 +227,7 @@ public class AutoLogin {
                 if(response.body().size() > 1){
                     for (int i = 0; i < response.body().size(); i++) {
                         dataSchedules.addAll(response.body());
+                        Log.d("ToanTQ","dataschedule size: "+ dataSchedules.size());
                     }
                 }else {
                     dataSchedules.addAll(response.body());

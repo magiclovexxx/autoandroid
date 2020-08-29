@@ -2,10 +2,13 @@ package com.startup.shoppyauto;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aquery.AQuery;
@@ -37,43 +40,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Log.d("Toantq", "Start data share pre xxx");
         btnStart.setText(getString(R.string.description));
 
-       // getData();
+    //    dataSharePre ();
     }
 
-    public  void  loadData(){
-        AQuery aQuery=new AQuery(this);
-        aQuery.ajax("http://zinbee.ddns.net:3000/getdata").get().response(new QueryNetworkListener() {
-            @Override
-            public void response(String s, Throwable throwable) {
-                Log.d("SonLv","res"+s);
-            }
-        });
-    }
+    public  void dataSharePre (){
+        Log.d("Toantq", "Start data share pre ");
+        Context context = null;
+        SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("url", "teamvietdev.com");
+        editor.putString("name", "Team Việt Dev");
+        editor.putBoolean("active", true);
+        editor.commit();
 
-    public void  getData(){
-        Log.d("SonLv","getdata");
-        APIService apiService= RetrofitClient.getClient().create(APIService.class);
-        apiService.getData().enqueue(new Callback<List<Contact>>() {
-            @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                //Nếu ok thì về dây
-               Log.d("SonLv","res: "+response.body().size());
+        String url = sharedPref.getString("url", "");
+        String name = sharedPref.getString("name", "");
+        boolean active = sharedPref.getBoolean("active", false);
 
-                for (int i = 0; i < response.body().size(); i++) {
-                    Log.d("SonLv","name: "+response.body().get(i).getName());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
-//Nếu có lỗi thì về ây
-                Log.d("SonLv","error: "+t.getMessage());
-            }
-        });
-
+        Log.d("Toantq", "url " + url);
     }
 
 
