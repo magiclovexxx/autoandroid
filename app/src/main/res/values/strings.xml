@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">ShoppyAuto</string>
+    <string name="app_name">Facebook Auto</string>
 
-    <string name="description">toanr</string>
+    <string name="description">START AUTO</string>
     <string name="hint">hint</string>
     <string name="ok">OK</string>
     <string name="device">device</string>

@@ -84,22 +84,30 @@ public class AutoLogin {
     public void runTesst() {
 
         runAllTime();
-
     }
 
     public void runAllTime(){
         getSchedules(1,"100010760317952");
-        Log.d("ToanTQ", "dataSchedules: " + dataSchedules.size());
-        while (dataSchedules.size() == 0){
 
+        long start = System.currentTimeMillis();
+        long end = start + 60000;
+
+        while (dataSchedules.size() == 0){
+            if(System.currentTimeMillis() > end) {
+                Log.d("ToanTQ", "Không lấy được dữ liệu từ sv: ");
+                break;
+            }
         }
+
         Log.d("ToanTQ", "bat dau tuong tac: ");
+
         if(dataSchedules.size() == 1){
+            Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(0).getTitle());
             autoView(dataSchedules.get(0));
         }else {
             for (int i = 0; i < dataSchedules.size(); i++) {
+                Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(i).getTitle());
                 autoView(dataSchedules.get(i));
-
             }
         }
 
@@ -111,7 +119,7 @@ public class AutoLogin {
 
     public void autoView(Schedules schedule) {
 
-        Log.d("ToanTQ", "start autoView: ");
+        Log.d("ToanTQ", "start auto Facebook: ");
 
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
@@ -129,33 +137,40 @@ public class AutoLogin {
         String linkPost = schedule.getTitle();
       //  String linkPost = "https://www.facebook.com/224894154970611/posts/760376101422411";
 
-        Log.d(TAG, "Tuong tac: " + schedule.getType());
-
         startIntentFace(getApplicationContext(),linkPost);
 
         if(schedule.getType().equals("bulk_like")){
+            Log.d(TAG, "Bat dau like: ");
             int likeResult = likePost();
-            Log.d(TAG, "Ket qua like : " + likePost());
             updateResultSchedules(1,"12345",likeResult);
-            Log.d(TAG, "Dữ liệu gửi lên v : " + dataUpdateResultSchedules);
+            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+
         }
 
         if(schedule.getType().equals("seeding") ){
             Log.d(TAG, "Bat dau seeding: ");
 
+            int commentResult = 0;
             String[] ArrayMessenger = new String[0];
 
             // Mảng các comment
             ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
-            Log.d(TAG, "tin nhan comment: " + dataSchedules.get(0).getMessage().toString());
+
             // Lấy ngẫu nhiên 1 comment
             Log.d(TAG, "Tin nhan seeding: " +  ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
-            Log.d(TAG, "Ket qua seeding: " +  commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]));
+            commentResult = commentPost(ArrayMessenger[ranInt(0,ArrayMessenger.length-1)]);
+
+            updateResultSchedules(1,"12345",commentResult);
+
+            Log.d(TAG, "Ket qua seeding: " + dataUpdateResultSchedules );
         }
 
         if(schedule.getType().equals("bulk_share")){
-            sharePost();
-            Log.d(TAG, "Ket qua share : " + sharePost());
+            int shareResult = 0;
+            shareResult = sharePost();
+
+            updateResultSchedules(1,"12345",shareResult);
+            Log.d(TAG, "Ket qua share: " + dataUpdateResultSchedules );
         }
 
         sleep(50000);
@@ -163,6 +178,7 @@ public class AutoLogin {
     }
 
     public  void  updateResultSchedules (int device, String fbid, int result){
+        dataUpdateResultSchedules = null;
         APIService apiService= RetrofitClient.getClient().create(APIService.class);
         apiService.updateResultSchedules(device,fbid,result).enqueue(new Callback<String>() {
             @Override
@@ -172,7 +188,6 @@ public class AutoLogin {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
             }
         });
     }
@@ -187,10 +202,6 @@ public class AutoLogin {
                 if(response.body().size()>0){
                     for (int i = 0; i < response.body().size(); i++) {
                         dataContact.addAll(response.body());
-
-                        // Đến đây dataContact vẫn có giá trị đúng
-                  //      Log.d("ToanTQ","name: "+dataContact.get(i).getName());
-
                     }
                 }
 
@@ -212,19 +223,13 @@ public class AutoLogin {
             @Override
             public void onResponse(Call<List<Schedules>> call, Response<List<Schedules>> response) {
                 //Nếu ok thì về dây
-
                 if(response.body().size() > 1){
                     for (int i = 0; i < response.body().size(); i++) {
                         dataSchedules.addAll(response.body());
-
-                        // Đến đây dataContact vẫn có giá trị đúng
-                   //     Log.d("ToanTQ","Link post: "+ dataSchedules.get(i).getTitle());
-
                     }
                 }else {
                     dataSchedules.addAll(response.body());
                 }
-
             }
 
             @Override
@@ -306,24 +311,29 @@ public class AutoLogin {
 
         sleep(ranInt(6000,9000)) ;
         UiObject2 view = mDevice.findObject(By.text("Thích"));
+
         Log.d("ToanTQ", "view Like: " + view);
         if (view != null) {
+            Log.d("ToanTQ", "if ");
+
             sleep(ranInt(1000,3000)) ;
             view.click();
             Log.d("ToanTQ", "Click Like");
+            return 1;
 
         }else {
             try {
-
+                Log.d("ToanTQ", "else ");
                 UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
                 if (appViews1 == null) return 0;
                 appViews1.scrollTextIntoView("Thích");
                 Log.d("ToanTQ", "Scroll tìm nút Like");
 
                 view = mDevice.findObject(By.text("Thích"));
+
                 if (view != null) {
                     view.click();
-                    Log.d("ToanTQ", "Click Like 222" );
+                    Log.d("ToanTQ", "Click Like 2" );
                 }
 
             } catch (UiObjectNotFoundException e) {
