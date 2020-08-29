@@ -92,7 +92,7 @@ public class AutoLogin {
         long start = System.currentTimeMillis();
         long end = start + 60000;
 
-        while (dataSchedules.size() == 0){
+        while (dataSchedules == null){
             if(System.currentTimeMillis() > end) {
                 Log.d("ToanTQ", "Không lấy được dữ liệu từ sv: ");
                 break;
@@ -104,7 +104,7 @@ public class AutoLogin {
         if(dataSchedules.size() == 1){
             Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(0).getTitle());
             autoView(dataSchedules.get(0));
-        }else {
+        }else if(dataSchedules.size() > 1){
             for (int i = 0; i < dataSchedules.size(); i++) {
                 Log.d("ToanTQ", "bat dau tuong tac: " + dataSchedules.get(i).getTitle());
                 autoView(dataSchedules.get(i));
