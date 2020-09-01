@@ -3,11 +3,10 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.2'
-
     defaultConfig {
         applicationId "com.startup.shoppyauto"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 

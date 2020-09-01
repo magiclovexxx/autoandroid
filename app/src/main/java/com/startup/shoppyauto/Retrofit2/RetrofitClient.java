@@ -26,24 +26,6 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    public static void dataSharePre(){
-        Log.d("Toantq", "Start data share pre ");
-        Context context = null;
-        SharedPreferences sharedPref ;
-        sharedPref = context.getSharedPreferences("MyPreferences", context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        editor.putString("url", "teamvietdev.com");
-        editor.putString("name", "Team Việt Dev");
-        editor.putBoolean("active", true);
-        editor.commit();
-
-        String url = sharedPref.getString("url", "");
-        String name = sharedPref.getString("name", "");
-        boolean active = sharedPref.getBoolean("active", false);
-
-        Log.d("Toantq", "url " + url);
-    }
     
     public static ArrayList<Contact> getDataUrl(){
 
@@ -60,7 +42,7 @@ public class RetrofitClient {
                     dataContact.add(response.body().get(i));
 
                     // Đến đây dataContact vẫn có giá trị đúng
-                    Log.d("SonLv","name: "+dataContact.get(i).getName());
+                    Log.d("Toantq","name: "+dataContact.get(i).getName());
 
                 }
             }
@@ -68,11 +50,10 @@ public class RetrofitClient {
             @Override
             public void onFailure(Call<List<Contact>> call, Throwable t) {
 //Nếu có lỗi thì về ây
-                Log.d("SonLv","error: "+t.getMessage());
+                Log.d("Toantq","error: "+t.getMessage());
             }
         });
-        // Đến đây dataContact là nó không có giá trị gì
-        Log.d("SonLv","dataContact: "+ dataContact.size());
+
         return dataContact;
     }
 
