@@ -2,13 +2,17 @@ package com.startup.shoppyauto;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -20,7 +24,10 @@ import android.widget.Toast;
 
 import com.startup.shoppyauto.Model.DataSharePre;
 
+import java.io.File;
 import java.io.OutputStream;
+
+import static androidx.core.content.ContextCompat.startActivity;
 
 public class MainActivity<deviceId> extends AppCompatActivity {
 
@@ -87,6 +94,9 @@ public class MainActivity<deviceId> extends AppCompatActivity {
             showToast("Có lỗi khi Auto");
         }
     }
+
+
+
     public  void  showToast(String sms){
         Toast.makeText(this,sms,Toast.LENGTH_LONG).show();
     }

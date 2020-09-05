@@ -95,8 +95,8 @@ public class AutoLogin {
 
         String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         //String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceId");
-        Log.d("Toantq", "deviceID runall: " + deviceId);
-        getSchedules(deviceId, "12345" );
+       // Log.d("Toantq", "deviceID runall: " + deviceId);
+        getSchedules(deviceId, deviceId );
 
         long start = System.currentTimeMillis();
         long end = start + 60000;
@@ -137,10 +137,11 @@ public class AutoLogin {
         }
     }
 
+
     public void autoView(Schedules schedule) {
         String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ToanTQ", "start auto Facebook: ");
-
+        int result = 0;
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
             return;
@@ -153,15 +154,28 @@ public class AutoLogin {
         }
 
         String linkPost = schedule.getTitle();
-        //  String linkPost = "https://www.facebook.com/224894154970611/posts/760376101422411";
+      //  linkPost = "fb://profile/hoa.bingan.31337194";
+        linkPost = "https://fb.com/profile";
+        Log.d("ToanTQ", "Link post: " + linkPost);
 
         startIntentFace(getApplicationContext(), linkPost);
 
+        if (schedule.getType().equals("report_profile")) {
+            Log.d(TAG, "Bat dau report profile: ");
+            result = likePost();
+            if (result == 1) {
+               // updateResultSchedules(deviceId, deviceId, schedule.getId(), result);
+            }
+            sleep(ranInt(5000, 10000));
+
+            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+        }
+
         if (schedule.getType().equals("bulk_like")) {
             Log.d(TAG, "Bat dau like: ");
-            int likeResult = likePost();
-            if (likeResult == 1) {
-                updateResultSchedules(deviceId, "12345", schedule.getId(), likeResult);
+            result = likePost();
+            if (result == 1) {
+                updateResultSchedules(deviceId, "12345", schedule.getId(), result);
             }
             sleep(ranInt(5000, 10000));
 
@@ -171,7 +185,7 @@ public class AutoLogin {
         if (schedule.getType().equals("seeding")) {
             Log.d(TAG, "Bat dau seeding: ");
 
-            int commentResult = 0;
+            result = 0;
             String[] ArrayMessenger = new String[0];
 
             // Mảng các comment
@@ -179,10 +193,10 @@ public class AutoLogin {
 
             // Lấy ngẫu nhiên 1 comment
             Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-            commentResult = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+            result = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
 
-            if (commentResult == 0) {
-                updateResultSchedules(deviceId, "12345", schedule.getId(), commentResult);
+            if (result == 0) {
+                updateResultSchedules(deviceId, "12345", schedule.getId(), result);
             }
         }
 
@@ -362,33 +376,20 @@ public class AutoLogin {
     public int ReportProfile() {
 
         sleep(ranInt(6000, 9000));
-        UiObject2 view = mDevice.findObject(By.text("Thích"));
+        UiObject2 view = mDevice.findObject(By.desc("Khác"));
 
-        Log.d("ToanTQ", "view Like: " + view);
+        Log.d("ToanTQ", "Report profile: " + view);
         if (view != null) {
             sleep(ranInt(1000, 3000));
             view.click();
-            Log.d("ToanTQ", "Click Like");
+
+            Log.d("ToanTQ", "Report");
+
+            UiObject2 view2 = mDevice.findObject(By.desc("Khác"));
+            checkView();
             return 1;
-        } else {
-            try {
 
-                UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
-                if (appViews1 == null) return 0;
-                appViews1.scrollTextIntoView("Thích");
-                Log.d("ToanTQ", "Scroll tìm nút Like");
-                view = mDevice.findObject(By.text("Thích"));
-
-                if (view != null) {
-                    view.click();
-                    Log.d("ToanTQ", "Click Like 2");
-                    return 1;
-                }
-
-            } catch (UiObjectNotFoundException e) {
-                Log.d("ToanTQ", "Exception: " + e.getMessage());
-            }
-            Log.d("ToanTQ", "Đéo Like dc");
+        }else {
             return 0;
         }
     }
