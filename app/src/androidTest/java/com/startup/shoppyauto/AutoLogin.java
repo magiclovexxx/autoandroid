@@ -141,6 +141,8 @@ public class AutoLogin {
     public void autoView(Schedules schedule) {
         String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ToanTQ", "start auto Facebook: ");
+        Log.d("ToanTQ", "Check update software: " + schedule.getUpdate_software());
+
         int result = 0;
         if (isFinish) {
             Log.d(TAG, "Kết thúc quá trình auto!");
@@ -155,7 +157,7 @@ public class AutoLogin {
 
         String linkPost = schedule.getTitle();
       //  linkPost = "fb://profile/hoa.bingan.31337194";
-        linkPost = "https://fb.com/profile";
+      //  linkPost = "https://fb.com/profile";
         Log.d("ToanTQ", "Link post: " + linkPost);
 
         startIntentFace(getApplicationContext(), linkPost);
@@ -189,11 +191,16 @@ public class AutoLogin {
             String[] ArrayMessenger = new String[0];
 
             // Mảng các comment
-            ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
+            if(dataSchedules.get(0).getMessage().toString().split("\n").length > 1){
+                ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
+                // Lấy ngẫu nhiên 1 comment
+                Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                result = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+            }else{
 
-            // Lấy ngẫu nhiên 1 comment
-            Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-            result = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+             //   Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                result = commentPost(dataSchedules.get(0).getMessage().toString());
+            }
 
             if (result == 0) {
                 updateResultSchedules(deviceId, "12345", schedule.getId(), result);
@@ -207,7 +214,6 @@ public class AutoLogin {
             {
                 updateResultSchedules(deviceId, "12345", schedule.getId(), shareResult);
             }
-
         }
 
         sleep(ranInt(5000, 10000));

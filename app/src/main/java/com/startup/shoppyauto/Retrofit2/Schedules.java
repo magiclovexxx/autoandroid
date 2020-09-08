@@ -97,6 +97,10 @@ public class Schedules {
     @SerializedName("slave")
     @Expose
     private Object slave;
+    @SerializedName("update_software")
+    @Expose
+    private int update_software;
+
 
     public int getId() {
         return Integer.parseInt(id);
@@ -345,4 +349,8 @@ public class Schedules {
     public void setSlave(Object slave) {
         this.slave = slave;
     }
+
+    public int getUpdate_software() { return update_software; }
+
+    public void setUpdate_software(int update_software) { this.update_software = update_software; }
 }

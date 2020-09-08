@@ -1,4 +1,4 @@
-package com.startup.shoppyauto.Actions;
+/*package com.startup.shoppyauto.Actions;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -60,7 +60,7 @@ private class DownloadFileAsyn extends AsyncTask<Void, String, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mProgressDialog = new ProgressDialog(MainActivity.this);
+        mProgressDialog = new ProgressDialog();
         mProgressDialog.setMessage("Đang tải xuống...");
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
@@ -91,3 +91,5 @@ private class DownloadFileAsyn extends AsyncTask<Void, String, Void> {
 
         Log.d("SonLv", fileName);
     }
+
+ */
