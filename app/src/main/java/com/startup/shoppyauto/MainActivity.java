@@ -1,5 +1,6 @@
 package com.startup.shoppyauto;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.startup.shoppyauto.Actions.PermissionSupport;
 import com.startup.shoppyauto.Model.DataSharePre;
 
 import java.io.File;
@@ -65,6 +67,20 @@ public class MainActivity<deviceId> extends AppCompatActivity {
         });
         btnStart.setText(getString(R.string.description));
         btnStop.setText("STOP AUTO");
+
+        checkQuyen();
+    }
+
+    public void  checkQuyen(){
+        PermissionSupport.getInstall(this).requestPermissionStore();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //Khi xin quyền xong nó trả về đây
+
+        checkQuyen();
     }
 
     public void getDeviceId(){

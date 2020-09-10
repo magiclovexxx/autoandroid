@@ -34,6 +34,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 
+import com.startup.shoppyauto.Actions.InstallSupport;
 import com.startup.shoppyauto.Model.DataSharePre;
 import com.startup.shoppyauto.Retrofit2.APIService;
 import com.startup.shoppyauto.Retrofit2.Contact;
@@ -141,7 +142,15 @@ public class AutoLogin {
     public void autoView(Schedules schedule) {
         String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ToanTQ", "start auto Facebook: ");
+
         Log.d("ToanTQ", "Check update software: " + schedule.getUpdate_software());
+
+        // update apk
+        if(schedule.getUpdate_software() == 1){
+            Log.d("ToanTQ", "start auto UPDATE: ");
+            new InstallSupport(getApplicationContext()).start();
+         sleep(30000);
+        }
 
         int result = 0;
         if (isFinish) {
@@ -360,6 +369,7 @@ public class AutoLogin {
             try {
 
                 UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+
                 if (appViews1 == null) return 0;
                 appViews1.scrollTextIntoView("Thích");
                 Log.d("ToanTQ", "Scroll tìm nút Like");
@@ -529,6 +539,7 @@ public class AutoLogin {
         Context context = getApplicationContext();
         final Intent intent = context.getPackageManager()
                 .getLaunchIntentForPackage("com.facebook.katana");
+            //    .getLaunchIntentForPackage("com.android.chrome");
         if (intent == null) {
             oppenMainActivity("Không có app facebook");
             return;
