@@ -35,7 +35,7 @@ public class MainActivity<deviceId> extends AppCompatActivity {
 
     Button btnStart, btnStop;
     EditText edittextdevice;
-    TextView TextDevice;
+    TextView TextDevice, TextAutoStatus, TextVersionCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +90,17 @@ public class MainActivity<deviceId> extends AppCompatActivity {
 
     public  void  setDataSetting (){
         String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceId");
+        String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
         edittextdevice = (EditText) findViewById(R.id.edittextdevice);
-        edittextdevice.setText("Hello ae");
+        edittextdevice.setText(deviceId);
         TextDevice = (TextView) findViewById(R.id.deviceid);
         TextDevice.setText(deviceId);
+        TextAutoStatus = (TextView) findViewById(R.id.devicestatus);
+        TextAutoStatus.setText(deviceStatus);
+        TextVersionCode = (TextView) findViewById(R.id.versioncodevalue);
+        TextVersionCode.setText(versionName);
 
     }
 

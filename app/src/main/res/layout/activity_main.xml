@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/ok"
+        android:layout_marginTop="30dp"
         android:text="@string/description" />
 
     <Button
@@ -58,6 +59,57 @@
         android:layout_weight="1"
         android:text="THIẾT BỊ" />
 
+    <TextView
+        android:id="@+id/devicestatus"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/edittextdevice"
+        android:layout_weight="1"
+        android:text="Trạng thái auto" />
+
+    <TextView
+        android:id="@+id/devicestatusvalue"
+        android:layout_width="wrap_content"
+        android:textSize="30dp"
+        android:hint="Status"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="50dp"
+        android:layout_below="@id/devicestatus"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/versioncode"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        android:layout_below="@id/btnStop"
+        android:layout_weight="1"
+        android:text="Version code" />
+
+    <TextView
+        android:id="@+id/versioncodevalue"
+        android:layout_width="wrap_content"
+        android:textSize="20dp"
+        android:hint="Version"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="50dp"
+        android:layout_below="@id/versioncode"
+        android:layout_centerHorizontal="true"
+        android:layout_weight="1"
+        android:text="" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -67,6 +119,11 @@
             android:layout_height="wrap_content"
             android:hint="hint" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
 
 
 </RelativeLayout>

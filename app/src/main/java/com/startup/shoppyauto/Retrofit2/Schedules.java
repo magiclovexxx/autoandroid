@@ -99,7 +99,7 @@ public class Schedules {
     private Object slave;
     @SerializedName("update_software")
     @Expose
-    private int update_software;
+    private String update_software;
 
 
     public int getId() {
@@ -350,7 +350,7 @@ public class Schedules {
         this.slave = slave;
     }
 
-    public int getUpdate_software() { return update_software; }
+    public String getUpdate_software() { return update_software; }
 
-    public void setUpdate_software(int update_software) { this.update_software = update_software; }
+    public void setUpdate_software(String update_software) { this.update_software = update_software; }
 }

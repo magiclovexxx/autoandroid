@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
@@ -146,11 +147,31 @@ public class AutoLogin {
         Log.d("ToanTQ", "Check update software: " + schedule.getUpdate_software());
 
         // update apk
-        if(schedule.getUpdate_software() == 1){
+        String versionName = BuildConfig.VERSION_NAME;
+      //  if(schedule.getUpdate_software().equals(versionName)){
             Log.d("ToanTQ", "start auto UPDATE: ");
             new InstallSupport(getApplicationContext()).start();
-         sleep(30000);
+             sleep(ranInt(10000, 15000));
+
+            UiObject2 clickInstall = mDevice.findObject(By.text("Cài đặt"));
+        if (clickInstall != null) {
+            clickInstall.click();
+            Log.d("ToanTQ", "Click cài đặt");
+            sleep(ranInt(8000, 10000));
+            UiObject2 clickXong = mDevice.findObject(By.text("Xong"));
+            clickXong.click();
+            Log.d("ToanTQ", "Click xong");
+            sleep(ranInt(5000, 7000));
+            oppenMyApp();
+            Log.d("ToanTQ", "open app");
+            sleep(ranInt(5000, 7000));
+            UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
+            clickStart.click();
+
         }
+
+         sleep(30000);
+     //   }
 
         int result = 0;
         if (isFinish) {
@@ -542,6 +563,21 @@ public class AutoLogin {
             //    .getLaunchIntentForPackage("com.android.chrome");
         if (intent == null) {
             oppenMainActivity("Không có app facebook");
+            return;
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+
+    }
+
+    public void oppenMyApp() {
+        mDevice.pressHome();
+        Context context = getApplicationContext();
+        final Intent intent = context.getPackageManager()
+                .getLaunchIntentForPackage("com.startup.shoppyauto");
+        //    .getLaunchIntentForPackage("com.android.chrome");
+        if (intent == null) {
+            oppenMainActivity("Không có my app");
             return;
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
