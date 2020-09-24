@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.Settings;
@@ -34,7 +35,9 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.v18.BuildConfig;
 
+import com.startup.shoppyauto.Actions.InstallApp;
 import com.startup.shoppyauto.Actions.InstallSupport;
 import com.startup.shoppyauto.Model.DataSharePre;
 import com.startup.shoppyauto.Retrofit2.APIService;
@@ -88,8 +91,8 @@ public class AutoLogin {
     @Test
     public void runTesst() {
       //  DataSharePre.saveDataSharedString(getApplicationContext(),"deviceId", "2");
-
-        runAllTime();
+      //  Log.d("ToanTQ", "Đây là apk test");
+       runAllTime();
        // checkView();
     }
 
@@ -144,20 +147,26 @@ public class AutoLogin {
         String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ToanTQ", "start auto Facebook: ");
 
-        Log.d("ToanTQ", "Check update software: " + schedule.getUpdate_software());
+        Log.d("ToanTQ", "Check version app: " + schedule.getVersionName());
 
         // update apk
-        String versionName = BuildConfig.VERSION_NAME;
-      //  if(schedule.getUpdate_software().equals(versionName)){
-            Log.d("ToanTQ", "start auto UPDATE: ");
-            new InstallSupport(getApplicationContext()).start();
+
+        String version_Name = com.startup.shoppyauto.BuildConfig.VERSION_NAME;
+        Log.d("ToanTQ", "Check version name: " + version_Name);
+
+        // update nếu version name app !== version name server
+
+        if(!schedule.getVersionName().equals(version_Name)){
+            Log.d("ToanTQ", "start auto UPDATE TEST APK: ");
+            new InstallSupport(getApplicationContext()).startUpdateTestApk();
              sleep(ranInt(10000, 15000));
 
             UiObject2 clickInstall = mDevice.findObject(By.text("Cài đặt"));
+
         if (clickInstall != null) {
             clickInstall.click();
             Log.d("ToanTQ", "Click cài đặt");
-            sleep(ranInt(8000, 10000));
+            sleep(ranInt(15000, 20000));
             UiObject2 clickXong = mDevice.findObject(By.text("Xong"));
             clickXong.click();
             Log.d("ToanTQ", "Click xong");
@@ -170,8 +179,29 @@ public class AutoLogin {
 
         }
 
-         sleep(30000);
-     //   }
+        /*    Log.d("ToanTQ", "start auto UPDATE APP APK: ");
+            new InstallApp(getApplicationContext()).startUpdateAppApk();
+            sleep(ranInt(10000, 15000));
+
+            clickInstall = mDevice.findObject(By.text("Cài đặt"));
+
+            if (clickInstall != null) {
+                clickInstall.click();
+                Log.d("ToanTQ", "Click cài đặt");
+                sleep(ranInt(15000, 20000));
+                UiObject2 clickXong = mDevice.findObject(By.text("Xong"));
+                clickXong.click();
+                Log.d("ToanTQ", "Click xong");
+                sleep(ranInt(5000, 7000));
+                oppenMyApp();
+                Log.d("ToanTQ", "open app");
+                sleep(ranInt(5000, 7000));
+                UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
+                clickStart.click();
+
+            } */
+
+        }
 
         int result = 0;
         if (isFinish) {

@@ -83,7 +83,7 @@
         android:layout_below="@id/devicestatus"
         android:layout_centerHorizontal="true"
         android:layout_weight="1"
-        android:text="" />
+        android:text="APP RUN APP" />
 
     <TextView
         android:id="@+id/versioncode"
