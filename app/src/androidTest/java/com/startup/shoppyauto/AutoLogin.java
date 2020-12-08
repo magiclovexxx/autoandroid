@@ -131,7 +131,7 @@ public class AutoLogin {
                 }
 
                 dataSchedules.clear();
-                sleep(ranInt(10000, 20000));
+                sleep(ranInt(5000, 10000));
                 Log.d("ToanTQ", "tuong tac lap lai ");
                 runAllTime();
 

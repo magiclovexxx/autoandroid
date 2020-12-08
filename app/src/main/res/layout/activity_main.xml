@@ -5,125 +5,135 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
     tools:context=".MainActivity">
 
-    <Button
-        android:textColor="#F44336"
-        android:layout_centerInParent="true"
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/ok"
-        android:layout_marginTop="30dp"
-        android:text="@string/description" />
-
-    <Button
-        android:textColor="#F44336"
-        android:layout_centerInParent="true"
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnStart"
-        android:contentDescription="@string/ok"
-        android:layout_marginTop="30dp"
-        android:text="BTN STOP" />
-
-     <TextView
+    <TextView
         android:id="@+id/manager"
-         android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-         android:textSize="30dp"
-         android:fontFamily="sans-serif"
-        android:layout_weight="1"
-        android:text="QUẢN LÝ" />
-
-    <EditText
-        android:id="@+id/edittextdevice"
-        android:layout_centerHorizontal="true"
-        android:textSize="40dp"
-        android:hint="Device"
         android:textAlignment="center"
+        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:layout_below="@id/deviceid" />
-    <TextView
-        android:id="@+id/deviceid"
-        android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp"
+        android:fontFamily="sans-serif"
+        android:textColor="#000000"
+        android:text="SETTING"
+        android:textSize="30dp" />
+
+
+    <TextView
+        android:id="@+id/autostatus"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_below="@id/manager"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/manager"
+        android:layout_marginTop="30dp"
         android:layout_weight="1"
-        android:text="THIẾT BỊ" />
+        android:text="Trạng thái auto:"
+        android:textColor="#000000"
+        android:textSize="30dp" />
 
     <TextView
         android:id="@+id/devicestatus"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="30dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/manager"
+        android:layout_toRightOf="@id/autostatus"
+        android:layout_marginLeft="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:text=""
+        android:textColor="#000000"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/autostatus"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="50dp"
-        android:layout_below="@id/edittextdevice"
-        android:layout_weight="1"
-        android:text="Trạng thái auto" />
+        android:contentDescription="@string/ok"
+        android:text="@string/description"
+        android:textColor="#F44336" />
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/autostatus"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/ok"
+        android:text="STOP AUTO"
+        android:textColor="#F44336" />
 
     <TextView
-        android:id="@+id/devicestatusvalue"
+        android:id="@+id/deviceid"
         android:layout_width="wrap_content"
-        android:textSize="30dp"
-        android:hint="Status"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="50dp"
-        android:layout_below="@id/devicestatus"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnStop"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
-        android:text="APP RUN APP" />
+        android:text="Thiết bị"
+        android:textColor="#000000"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/edittextdevice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20px"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@id/btnStop"
+       android:layout_toRightOf="@id/deviceid"
+        android:hint="Device"
+        android:textColor="#000000"
+        android:textSize="30dp" />
 
     <TextView
         android:id="@+id/versioncode"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="20dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_below="@id/edittextdevice"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
-        android:layout_below="@id/btnStop"
+        android:layout_marginTop="30dp"
         android:layout_weight="1"
-        android:text="Version code" />
+        android:text="Version code"
+        android:textColor="#000000"
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/versioncodevalue"
         android:layout_width="wrap_content"
-        android:textSize="20dp"
-        android:hint="Version"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/edittextdevice"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"
-        android:layout_below="@id/versioncode"
-        android:layout_centerHorizontal="true"
         android:layout_weight="1"
-        android:text="" />
+        android:hint="Version"
+        android:textColor="#000000"
+        android:text=""
+        android:textSize="20dp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="hint" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
 
 
 </RelativeLayout>

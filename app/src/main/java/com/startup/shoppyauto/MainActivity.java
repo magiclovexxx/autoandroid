@@ -45,13 +45,16 @@ public class MainActivity<deviceId> extends AppCompatActivity {
         btnStop=findViewById(R.id.btnStop);
 
         //DataSharePre.saveDataSharedInt(getApplicationContext(),"deviceId",10);
-
+        getDeviceId();
         setDataSetting ();
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DataSharePre.saveDataSharedString(getApplicationContext(),"auto","yes");
+                String deviceStatus = "yes";
+                TextAutoStatus = (TextView) findViewById(R.id.devicestatus);
+                TextAutoStatus.setText(deviceStatus);
                 callAuto();
             }
         });
@@ -62,6 +65,9 @@ public class MainActivity<deviceId> extends AppCompatActivity {
             public void onClick(View view) {
 
                 DataSharePre.saveDataSharedString(getApplication(),"auto","no");
+                String deviceStatus = "No";
+                TextAutoStatus = (TextView) findViewById(R.id.devicestatus);
+                TextAutoStatus.setText(deviceStatus);
                 showToast("Tạm dừng Auto");
             }
         });
@@ -89,14 +95,14 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     }
 
     public  void  setDataSetting (){
-        String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceId");
+        String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceID");
         String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
         edittextdevice = (EditText) findViewById(R.id.edittextdevice);
         edittextdevice.setText(deviceId);
         TextDevice = (TextView) findViewById(R.id.deviceid);
-        TextDevice.setText(deviceId);
+
         TextAutoStatus = (TextView) findViewById(R.id.devicestatus);
         TextAutoStatus.setText(deviceStatus);
         TextVersionCode = (TextView) findViewById(R.id.versioncodevalue);
@@ -113,7 +119,7 @@ public class MainActivity<deviceId> extends AppCompatActivity {
             out.close();
             showToast("Bắt đầu thực hiện Auto");
         } catch (Exception e) {
-            Log.d("Toantq", "Exception: " + e.getMessage());
+            Log.d("ToanTQ", "Exception: " + e.getMessage());
             showToast("Có lỗi khi Auto");
         }
     }
