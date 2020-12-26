@@ -3,6 +3,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,50 +14,37 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
- 
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
 public class RetrofitClient {
  
     private static Retrofit retrofit = null;
- 
-    public static Retrofit getClient() {
+
+    public static Retrofit getClient(String url) {
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://tangtuongtac.net")
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(url)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
     }
 
-    
-    public static ArrayList<Contact> getDataUrl(){
-
-         ArrayList<Contact> dataContact = new ArrayList<>();
-
-        APIService apiService= RetrofitClient.getClient().create(APIService.class);
-        apiService.getData().enqueue(new Callback<List<Contact>>() {
-            @Override
-            public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
-                //Nếu ok thì về dây
-
-            //    Log.d("SonLv","res: "+ response.body().size());
-                for (int i = 0; i < response.body().size(); i++) {
-                    dataContact.add(response.body().get(i));
-
-                    // Đến đây dataContact vẫn có giá trị đúng
-                    Log.d("Toantq","name: "+dataContact.get(i).getName());
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Contact>> call, Throwable t) {
-//Nếu có lỗi thì về ây
-                Log.d("Toantq","error: "+t.getMessage());
-            }
-        });
-
-        return dataContact;
+    public static Retrofit getfacode() {
+        String url = "http://facode.tranquoctoan.com:8000/";
+        Log.d("ToanTQ", "Retrofit: " + url);
+        if (retrofit==null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(url)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofit;
     }
 
 }

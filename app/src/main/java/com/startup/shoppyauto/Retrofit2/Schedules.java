@@ -7,12 +7,15 @@ public class Schedules {
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("uid")
     @Expose
     private String uid;
+
     @SerializedName("account_id")
     @Expose
     private String accountId;
+
     @SerializedName("account_name")
     @Expose
     private Object accountName;

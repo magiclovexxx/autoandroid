@@ -11,91 +11,36 @@
     android:paddingBottom="20dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/manager"
-        android:textAlignment="center"
-        android:paddingTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="sans-serif"
-        android:textColor="#000000"
-        android:text="SETTING"
-        android:textSize="30dp" />
-
-
-    <TextView
-        android:id="@+id/autostatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/manager"
-        android:layout_marginTop="30dp"
-        android:layout_weight="1"
-        android:text="Trạng thái auto:"
-        android:textColor="#000000"
-        android:textSize="30dp" />
-
-    <TextView
-        android:id="@+id/devicestatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/manager"
-        android:layout_toRightOf="@id/autostatus"
-        android:layout_marginLeft="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:layout_weight="1"
-        android:text=""
-        android:textColor="#000000"
-        android:textSize="30dp" />
-
     <Button
         android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/deviceid"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/autostatus"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="50dp"
-        android:contentDescription="@string/ok"
-        android:text="@string/description"
-        android:textColor="#F44336" />
-
-    <Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/autostatus"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="50dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginTop="30dp"
         android:contentDescription="@string/ok"
-        android:text="STOP AUTO"
+        android:text="@string/btnStart"
         android:textColor="#F44336" />
 
     <TextView
         android:id="@+id/deviceid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnStop"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:text="Thiết bị"
+        android:text="Máy"
         android:textColor="#000000"
         android:textSize="30dp" />
 
-    <EditText
-        android:id="@+id/edittextdevice"
+    <TextView
+        android:id="@+id/devicename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20px"
         android:layout_marginLeft="30dp"
-        android:layout_below="@id/btnStop"
-       android:layout_toRightOf="@id/deviceid"
-        android:hint="Device"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@id/deviceid"
+
         android:textColor="#000000"
         android:textSize="30dp" />
 
@@ -103,9 +48,8 @@
         android:id="@+id/versioncode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edittextdevice"
+        android:layout_below="@id/btnStart"
         android:layout_alignParentLeft="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="30dp"
         android:layout_weight="1"
@@ -118,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/edittextdevice"
+        android:layout_below="@id/btnStart"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:layout_marginRight="50dp"

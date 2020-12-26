@@ -1,6 +1,5 @@
-package com.startup.shoppyauto.Actions;
+package com.startup.shoppyauto.System;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,30 +21,28 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.Executors;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-public class InstallSupport {
+public class InstallApp {
     static Context context;
 
-    public InstallSupport(Context context) {
+    public InstallApp(Context context) {
         this.context = context;
     }
 
-    public  void startUpdateTestApk() {
-        DownloadFileAsyn_test downloadFileAsyn = new DownloadFileAsyn_test();
+    public  void startUpdateAppApk() {
+        DownloadFileAsyn_App downloadFileAsyn = new DownloadFileAsyn_App();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
             downloadFileAsyn.executeOnExecutor(Executors.newFixedThreadPool(1));
         else downloadFileAsyn.execute();
     }
 
-    private class DownloadFileAsyn_test extends AsyncTask<Void, String, Void> {
+    private class DownloadFileAsyn_App extends AsyncTask<Void, String, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
             int count;
             try {
-                String urlUpdateApp = "https://tangtuongtac.net/apk/app-debug-androidTest.apk";
+                String urlUpdateApp = "https://tangtuongtac.net/apk/app-debug.apk";
                 URL url = new URL(urlUpdateApp);
                 URLConnection conexion = url.openConnection();
                 conexion.connect();

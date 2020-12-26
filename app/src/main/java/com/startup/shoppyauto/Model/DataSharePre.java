@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Array;
+
 public class DataSharePre {
 
     public static void saveDataSharedInt(Context context, String key, int value){
@@ -13,22 +15,11 @@ public class DataSharePre {
         context.getApplicationContext();
         SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
 
-        Log.d("Toantq", "save data to shared " );
+        Log.d("Toantq", "save data to shared key:"+key + "  value: " + value );
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(key,value);
         editor.commit();
     }
-
-    public static void saveDataSharedString(Context context, String key, String value){
-
-        context.getApplicationContext();
-        SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(key,value);
-        editor.commit();
-    }
-
 
     public static int getDataSharedInt(Context context, String key){
 
@@ -42,5 +33,15 @@ public class DataSharePre {
         SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         String data = sharedPref.getString(key, "");
         return data;
+    }
+
+    public static void saveDataSharedString(Context context, String key, String value){
+
+        context.getApplicationContext();
+        SharedPreferences sharedPref = context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        Log.d("Toantq", "save data to shared key:"+key + "  value: " + value );
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(key,value);
+        editor.commit();
     }
 }

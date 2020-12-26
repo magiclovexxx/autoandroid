@@ -17,8 +17,17 @@ public interface APIService {
     @GET("/api_mobile/data")
     Call<List<Schedules>> getSchedules(@Query("device") String device, @Query("fbid") String fbid);
 
+    @GET("/api_mobile/accountmobile")
+    Call<List<Accounts>> getAccounts(@Query("device") String device);
+
     @GET("/api_mobile/updateresult")
     Call<String> updateResultSchedules(@Query("device") String device, @Query("fbid") String fbid, @Query("sid") int sid, @Query("result") int result);
+
+    @GET("/api_mobile/deviceinfo")
+    Call<Object> deviceInfo(@Query("device") String device);
+
+    @GET("/facode")
+    Call<String> get2FaCode(@Query("key") String secretKey);
 
     @FormUrlEncoded
     @POST("user/edit")
