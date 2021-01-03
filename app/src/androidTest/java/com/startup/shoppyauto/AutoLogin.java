@@ -41,7 +41,6 @@ import com.startup.shoppyauto.Retrofit2.Accounts;
 import com.startup.shoppyauto.Retrofit2.Contact;
 import com.startup.shoppyauto.Retrofit2.RetrofitClient;
 import com.startup.shoppyauto.Retrofit2.Schedules;
-import com.startup.shoppyauto.Actions.InstallSupport;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -134,11 +133,15 @@ public class AutoLogin {
                 Log.d("ToanTQ", "tuong tac lap lai ");
                 runAllTime();
             } else {
+
                 Log.d("ToanTQ", "auto: " + checkAuto);
+                int pid = android.os.Process.myPid();
+                android.os.Process.killProcess(pid);
 
             }
         } else {
             int accountIndex = DataSharePre.getDataSharedInt(getApplicationContext(), "accountIndex");
+            likeTimeline();
 
             dataAccounts = getFbAccounts(deviceId);
             if (dataAccounts.size() > 0) {
@@ -361,9 +364,7 @@ public class AutoLogin {
         String deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("ToanTQ", "start auto Facebook: ");
 
-        Log.d("ToanTQ", "Check version app: " + schedule.getVersionName());
-
-        // update apk
+        Log.d("ToanTQ", "Check version server: " + schedule.getVersionName());
 
         // check version code in device
         String version_Name = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
@@ -372,147 +373,104 @@ public class AutoLogin {
 
         // update nếu version name app !== version name server
 
-        //if (schedule.getVersionName().equals(version_Name)) {
-        if(1 == 1){
+        if (!schedule.getVersionName().equals(version_Name)) {
+        //if(1 == 1){
             Log.d("ToanTQ", "start auto UPDATE TEST APK: ");
-            new InstallSupport(getApplicationContext()).startUpdateTestApk();
-            sleep(ranInt(10000, 15000));
-
-            UiObject2 clickInstall = mDevice.findObject(By.text("Cài đặt"));
-
-            if (clickInstall != null) {
-                clickInstall.click();
-                Log.d("ToanTQ", "Click cài đặt");
-                sleep(ranInt(15000, 20000));
-                UiObject2 clickXong = mDevice.findObject(By.text("XONG"));
-                if (clickXong != null) {
-                    Log.d("ToanTQ", "Không tìm thấy nút xong");
-                } else {
-                    clickXong.click();
-                    Log.d("ToanTQ", "Click xong");
-                }
-
-                Log.d("ToanTQ", "Click cài đặt");
-                sleep(ranInt(15000, 20000));
-                UiObject2 clickChapNhan = mDevice.findObject(By.text("CHẤP NHẬN"));
-                if (clickChapNhan != null) {
-                    Log.d("ToanTQ", "Không tìm thấy nút xong");
-                } else {
-                    clickXong.click();
-                    Log.d("ToanTQ", "Click xong");
-                }
-
-                sleep(ranInt(5000, 7000));
-                oppenMyApp();
-                Log.d("ToanTQ", "open app");
-                sleep(ranInt(5000, 7000));
-                UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
-                clickStart.click();
-
-            }else{
-                Log.d("ToanTQ", "Có lỗi khi Click cài đặt");
-            }
-
-        /*    Log.d("ToanTQ", "start auto UPDATE APP APK: ");
-            new InstallApp(getApplicationContext()).startUpdateAppApk();
-            sleep(ranInt(10000, 15000));
-
-            clickInstall = mDevice.findObject(By.text("Cài đặt"));
-
-            if (clickInstall != null) {
-                clickInstall.click();
-                Log.d("ToanTQ", "Click cài đặt");
-                sleep(ranInt(15000, 20000));
-                UiObject2 clickXong = mDevice.findObject(By.text("Xong"));
-                clickXong.click();
-                Log.d("ToanTQ", "Click xong");
-                sleep(ranInt(5000, 7000));
-                oppenMyApp();
-                Log.d("ToanTQ", "open app");
-                sleep(ranInt(5000, 7000));
-                UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
-                clickStart.click();
-
-            } */
             DataSharePre.saveDataSharedString(getApplicationContext(),"version_code",schedule.getVersionName());
+            oppenAutoUpdateApp();
+            int pid = android.os.Process.myPid();
+            android.os.Process.killProcess(pid);
+            sleep(10000);
+            UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
+            if (clickStart != null) {
+                clickStart.click();
+                sleep(3000);
+            }else {
+                Log.d("ToanTQ", "Không tìm thấy nút Start Auto Update");
 
-        }
-
-        int result = 0;
-        if (isFinish) {
-            Log.d(TAG, "Kết thúc quá trình auto!");
-            return;
-        }
-
-        try {
-            mDevice.wakeUp(); // sang màn hình, mở khoá màn hình
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        String linkPost = schedule.getTitle();
-        //  linkPost = "fb://profile/hoa.bingan.31337194";
-        //  linkPost = "https://fb.com/profile";
-        Log.d("ToanTQ", "Link post: " + linkPost);
-
-        startIntentFace(getApplicationContext(), linkPost);
-
-        if (schedule.getType().equals("report_profile")) {
-            Log.d(TAG, "Bat dau report profile: ");
-            result =  likePost();
-            if (result == 1) {
-                // updateResultSchedules(deviceId, deviceId, schedule.getId(), result);
             }
+//            int pid = android.os.Process.myPid();
+//            android.os.Process.killProcess(pid);
+
+
+        }else {
+
+            int result = 0;
+            if (isFinish) {
+                Log.d(TAG, "Kết thúc quá trình auto!");
+                return;
+            }
+
+            try {
+                mDevice.wakeUp(); // sang màn hình, mở khoá màn hình
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            String linkPost = schedule.getTitle();
+            //  linkPost = "fb://profile/hoa.bingan.31337194";
+            //  linkPost = "https://fb.com/profile";
+            Log.d("ToanTQ", "Link post: " + linkPost);
+
+            startIntentFace(getApplicationContext(), linkPost);
+
+            if (schedule.getType().equals("report_profile")) {
+                Log.d(TAG, "Bat dau report profile: ");
+                result = likePost();
+                if (result == 1) {
+                    // updateResultSchedules(deviceId, deviceId, schedule.getId(), result);
+                }
+                sleep(ranInt(5000, 10000));
+
+                Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+            }
+
+            if (schedule.getType().equals("bulk_like")) {
+                Log.d(TAG, "Bat dau like: ");
+                result = likePost();
+                if (result == 1) {
+                    updateResultSchedules(deviceId, "12345", schedule.getId(), result);
+                }
+                sleep(ranInt(5000, 10000));
+
+                Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+            }
+
+            if (schedule.getType().equals("seeding")) {
+                Log.d(TAG, "Bat dau seeding: ");
+
+                result = 0;
+                String[] ArrayMessenger = new String[0];
+
+                // Mảng các comment
+                if (dataSchedules.get(0).getMessage().toString().split("\n").length > 1) {
+                    ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
+                    // Lấy ngẫu nhiên 1 comment
+                    Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                    result = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                } else {
+
+                    //   Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                    result = commentPost(dataSchedules.get(0).getMessage().toString());
+                }
+
+                if (result == 0) {
+                    updateResultSchedules(deviceId, "12345", schedule.getId(), result);
+                }
+            }
+
+            if (schedule.getType().equals("bulk_share")) {
+                int shareResult = 0;
+                shareResult = sharePost();
+                if (shareResult == 0) ;
+                {
+                    updateResultSchedules(deviceId, "12345", schedule.getId(), shareResult);
+                }
+            }
+
             sleep(ranInt(5000, 10000));
-
-            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
+            // autoView(schedule);
         }
-
-        if (schedule.getType().equals("bulk_like")) {
-            Log.d(TAG, "Bat dau like: ");
-            result =  likePost();
-            if (result == 1) {
-                updateResultSchedules(deviceId, "12345", schedule.getId(), result);
-            }
-            sleep(ranInt(5000, 10000));
-
-            Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
-        }
-
-        if (schedule.getType().equals("seeding")) {
-            Log.d(TAG, "Bat dau seeding: ");
-
-            result = 0;
-            String[] ArrayMessenger = new String[0];
-
-            // Mảng các comment
-            if (dataSchedules.get(0).getMessage().toString().split("\n").length > 1) {
-                ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
-                // Lấy ngẫu nhiên 1 comment
-                Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-                result =  commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-            } else {
-
-                //   Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-                result =  commentPost(dataSchedules.get(0).getMessage().toString());
-            }
-
-            if (result == 0) {
-                updateResultSchedules(deviceId, "12345", schedule.getId(), result);
-            }
-        }
-
-        if (schedule.getType().equals("bulk_share")) {
-            int shareResult = 0;
-            shareResult =  sharePost();
-            if (shareResult == 0) ;
-            {
-                updateResultSchedules(deviceId, "12345", schedule.getId(), shareResult);
-            }
-        }
-
-        sleep(ranInt(5000, 10000));
-        // autoView(schedule);
     }
 
     public void updateResultSchedules(String device, String fbid, int sid, int result) {
@@ -640,24 +598,6 @@ public class AutoLogin {
         return facode;
     }
 
-    public void searchProduct() {
-
-        try {
-            UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
-            if (appViews1 == null) return;
-            appViews1.scrollTextIntoView("Thích");
-            Log.d("ToanTQ", "Scroll filter");
-        } catch (UiObjectNotFoundException e) {
-            Log.d("ToanTQ", "Exception: " + e.getMessage());
-        }
-        UiObject2 view = mDevice.findObject(By.text("Thích"));
-        if (view != null) {
-            view.click();
-            Log.d("ToanTQ", "Click Like");
-
-        }
-
-    }
 
     public static void startIntentFace(Context context, String uriContent) {
         Uri uri = Uri.parse(uriContent);
@@ -699,6 +639,50 @@ public class AutoLogin {
         }
         sleep(ranInt(10000, 11000));
         checkView();
+    }
+
+    public void likeTimeline() {
+
+        sleep(ranInt(6000, 9000));
+        int xx = ranInt(3,6);
+        for (int i=0; i<xx ; i++){
+            UiObject2 view = mDevice.findObject(By.text("Thích"));
+
+            Log.d("ToanTQ", "view Like: " + view);
+            if (view != null) {
+                sleep(ranInt(1000, 3000));
+                view.click();
+                Log.d("ToanTQ", "Click Like");
+
+            } else {
+                try {
+                    sleep(ranInt(2000, 3000));
+                    UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+
+                    if (appViews1 != null){
+                        appViews1.scrollTextIntoView("Thích");
+                        sleep(ranInt(2000, 3000));
+                        Log.d("ToanTQ", "Scroll tìm nút Like");
+                        view = mDevice.findObject(By.text("Thích"));
+                        if (view != null) {
+                            view.click();
+                            Log.d("ToanTQ", "Click Like 2");
+
+                        } else {
+                            Log.d("ToanTQ", "Không tìm thấy nút like");
+                        }
+
+                    }
+
+
+                } catch (UiObjectNotFoundException e) {
+                    Log.d("ToanTQ", "Exception: " + e.getMessage());
+                }
+                Log.d("ToanTQ", "Đéo Like dc");
+
+            }
+        }
+
     }
 
     public int shareLive() {
@@ -1044,14 +1028,14 @@ public class AutoLogin {
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
     }
-    public void oppenMyApp() {
+    public void oppenAutoUpdateApp() {
         mDevice.pressHome();
         Context context = getApplicationContext();
         final Intent intent = context.getPackageManager()
-                .getLaunchIntentForPackage("com.startup.shoppyauto");
+                .getLaunchIntentForPackage("com.auto.autoupdate");
         //    .getLaunchIntentForPackage("com.android.chrome");
         if (intent == null) {
-            oppenMainActivity("Không có my app");
+            oppenMainActivity("Không có app auto update");
             return;
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

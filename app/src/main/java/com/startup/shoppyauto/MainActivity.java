@@ -1,12 +1,15 @@
 package com.startup.shoppyauto;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +21,7 @@ import java.io.OutputStream;
 
 public class MainActivity<deviceId> extends AppCompatActivity {
 
-    Button btnStart;
+    Button btnStart, btnStop;
     TextView deviceName;
     TextView TextVersionCode;
 
@@ -26,49 +29,44 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btnStart=findViewById(R.id.btnStart);
+        btnStart = findViewById(R.id.btnStart);
+        btnStop=findViewById(R.id.btnStop);
 
         //DataSharePre.saveDataSharedInt(getApplicationContext(),"deviceId",10);
         getDeviceId();
-        setDataSetting ();
+        setDataSetting();
 
-        btnStart.setOnClickListener(new View.OnClickListener() {
+        btnStart.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String autoStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
+                int PID1= android.os.Process.getUidForName("com.auto.autoupdate");
+                android.os.Process.killProcess(PID1);
 
-                if(autoStatus.equals("no")){
-                    Log.d("ToanTQ", "autoStatus: " + autoStatus);
-                    DataSharePre.saveDataSharedString(getApplicationContext(),"auto","yes");
-                    String deviceStatus = "yes";
+                String autoStatus = DataSharePre.getDataSharedString(getApplicationContext(), "auto");
 
-                    btnStart.setText("Stop AuTo");
-                    callAuto();
-                }else{
-                    DataSharePre.saveDataSharedString(getApplication(),"auto","no");
-                    String deviceStatus = "No";
+                Log.d("ToanTQ", "autoStatus: " + autoStatus);
+                DataSharePre.saveDataSharedString(getApplicationContext(), "auto", "yes");
 
-                    btnStart.setText("Start AuTo");
-                    showToast("Tạm dừng Auto");
-                }
+                callAuto();
             }
         });
 
-        String autoStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
+        btnStop.setOnClickListener(new OnClickListener() {
 
-        if(autoStatus.equals("no")){
-            btnStart.setText("Start auto");
-        }else{
-            btnStart.setText("Stop auto");
-        }
+            @Override
+            public void onClick(View view) {
 
-       //
-       // btnStop.setText("STOP AUTO");
-
+                DataSharePre.saveDataSharedString(getApplication(),"auto","no");
+                int pid = android.os.Process.myPid();
+                android.os.Process.killProcess(pid);
+                showToast("Tạm dừng Auto");
+            }
+        });
         checkQuyen();
     }
 
-    public void  checkQuyen(){
+
+    public void checkQuyen() {
         PermissionSupport.getInstall(this).requestPermissionStore();
     }
 
@@ -80,16 +78,16 @@ public class MainActivity<deviceId> extends AppCompatActivity {
         checkQuyen();
     }
 
-    public void getDeviceId(){
+    public void getDeviceId() {
         String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        DataSharePre.saveDataSharedString(getApplication(),"deviceId",deviceId);
+        DataSharePre.saveDataSharedString(getApplication(), "deviceId", deviceId);
     }
 
-    public  void  setDataSetting (){
-        String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceId");
-        String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
-       // String versionCode = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
-        String versionName = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
+    public void setDataSetting() {
+        String deviceId = DataSharePre.getDataSharedString(getApplicationContext(), "deviceId");
+        String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(), "auto");
+        // String versionCode = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
+        String versionName = DataSharePre.getDataSharedString(getApplicationContext(), "version_code");
         deviceName = (TextView) findViewById(R.id.devicename);
         deviceName.setText(deviceId);
         TextVersionCode = (TextView) findViewById(R.id.versioncodevalue);
@@ -97,7 +95,7 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     }
 
 
-    public void callAuto(){
+    public void callAuto() {
         try {
             OutputStream out = new ProcessBuilder(new String[0]).redirectErrorStream(true).command(new String[]{"su"}).start().getOutputStream();
             out.write("am instrument -w -r   -e debug false -e class 'com.startup.shoppyauto.AutoLogin' com.startup.shoppyauto.test/androidx.test.runner.AndroidJUnitRunner\n".getBytes("UTF-8"));
@@ -111,9 +109,8 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     }
 
 
-
-    public  void  showToast(String sms){
-        Toast.makeText(this,sms,Toast.LENGTH_LONG).show();
+    public void showToast(String sms) {
+        Toast.makeText(this, sms, Toast.LENGTH_LONG).show();
     }
 
 }

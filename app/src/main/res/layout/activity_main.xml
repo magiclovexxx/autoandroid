@@ -13,14 +13,26 @@
 
     <Button
         android:id="@+id/btnStart"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/deviceid"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:contentDescription="@string/ok"
-        android:text="@string/btnStart"
+        android:text="START AUTO"
+        android:textColor="#F44336" />
+
+    <Button
+        android:id="@+id/btnStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/deviceid"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/ok"
+        android:text="STOP AUTO"
         android:textColor="#F44336" />
 
     <TextView
@@ -40,9 +52,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/deviceid"
-
         android:textColor="#000000"
-        android:textSize="30dp" />
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/versioncode"
