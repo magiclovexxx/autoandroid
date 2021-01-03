@@ -1,4 +1,4 @@
-package com.startup.shoppyauto.System;
+package com.startup.shoppyauto.Actions;
 
 import android.Manifest;
 import android.app.Activity;

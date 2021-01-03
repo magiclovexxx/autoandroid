@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/deviceid"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:contentDescription="@string/ok"
         android:text="@string/btnStart"
@@ -27,17 +27,17 @@
         android:id="@+id/deviceid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:text="Máy"
         android:textColor="#000000"
-        android:textSize="30dp" />
+        android:textSize="20dp" />
 
     <TextView
         android:id="@+id/devicename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_toRightOf="@id/deviceid"
 
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnStart"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:layout_weight="1"
         android:text="Version code"

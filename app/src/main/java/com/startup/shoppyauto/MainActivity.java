@@ -11,16 +11,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.startup.shoppyauto.System.PermissionSupport;
+import com.startup.shoppyauto.Actions.PermissionSupport;
 import com.startup.shoppyauto.Model.DataSharePre;
 
 import java.io.OutputStream;
 
 public class MainActivity<deviceId> extends AppCompatActivity {
 
-    Button btnStart, btnStop;
+    Button btnStart;
     TextView deviceName;
-    TextView TextDevice, TextAutoStatus, TextVersionCode;
+    TextView TextVersionCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +88,8 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     public  void  setDataSetting (){
         String deviceId = DataSharePre.getDataSharedString(getApplicationContext(),"deviceId");
         String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(),"auto");
-        int versionCode = BuildConfig.VERSION_CODE;
-        String versionName = BuildConfig.VERSION_NAME;
+       // String versionCode = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
+        String versionName = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
         deviceName = (TextView) findViewById(R.id.devicename);
         deviceName.setText(deviceId);
         TextVersionCode = (TextView) findViewById(R.id.versioncodevalue);

@@ -41,7 +41,7 @@ import com.startup.shoppyauto.Retrofit2.Accounts;
 import com.startup.shoppyauto.Retrofit2.Contact;
 import com.startup.shoppyauto.Retrofit2.RetrofitClient;
 import com.startup.shoppyauto.Retrofit2.Schedules;
-import com.startup.shoppyauto.System.InstallSupport;
+import com.startup.shoppyauto.Actions.InstallSupport;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -96,7 +96,7 @@ public class AutoLogin {
     @Test
     public void runTesst() {
         //  DataSharePre.saveDataSharedString(getApplicationContext(),"deviceId", "2");
-        //  Log.d("ToanTQ", "Đây là apk test");
+
         runAllTime();
         // checkView();
     }
@@ -104,7 +104,7 @@ public class AutoLogin {
     private static Retrofit retrofit = null;
 
     public void runAllTime() {
-
+        Log.d("ToanTQ", "Đây là apk hiện tại");
         // String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         String deviceId = DataSharePre.getDataSharedString(getApplicationContext(), "deviceId");
         String fbid = DataSharePre.getDataSharedString(getApplicationContext(), "fbid");
@@ -365,12 +365,15 @@ public class AutoLogin {
 
         // update apk
 
-        String version_Name = com.startup.shoppyauto.BuildConfig.VERSION_NAME;
+        // check version code in device
+        String version_Name = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
+
         Log.d("ToanTQ", "Check version name: " + version_Name);
 
         // update nếu version name app !== version name server
 
-        if (!schedule.getVersionName().equals(version_Name)) {
+        //if (schedule.getVersionName().equals(version_Name)) {
+        if(1 == 1){
             Log.d("ToanTQ", "start auto UPDATE TEST APK: ");
             new InstallSupport(getApplicationContext()).startUpdateTestApk();
             sleep(ranInt(10000, 15000));
@@ -381,9 +384,24 @@ public class AutoLogin {
                 clickInstall.click();
                 Log.d("ToanTQ", "Click cài đặt");
                 sleep(ranInt(15000, 20000));
-                UiObject2 clickXong = mDevice.findObject(By.text("Xong"));
-                clickXong.click();
-                Log.d("ToanTQ", "Click xong");
+                UiObject2 clickXong = mDevice.findObject(By.text("XONG"));
+                if (clickXong != null) {
+                    Log.d("ToanTQ", "Không tìm thấy nút xong");
+                } else {
+                    clickXong.click();
+                    Log.d("ToanTQ", "Click xong");
+                }
+
+                Log.d("ToanTQ", "Click cài đặt");
+                sleep(ranInt(15000, 20000));
+                UiObject2 clickChapNhan = mDevice.findObject(By.text("CHẤP NHẬN"));
+                if (clickChapNhan != null) {
+                    Log.d("ToanTQ", "Không tìm thấy nút xong");
+                } else {
+                    clickXong.click();
+                    Log.d("ToanTQ", "Click xong");
+                }
+
                 sleep(ranInt(5000, 7000));
                 oppenMyApp();
                 Log.d("ToanTQ", "open app");
@@ -391,6 +409,8 @@ public class AutoLogin {
                 UiObject2 clickStart = mDevice.findObject(By.text("START AUTO"));
                 clickStart.click();
 
+            }else{
+                Log.d("ToanTQ", "Có lỗi khi Click cài đặt");
             }
 
         /*    Log.d("ToanTQ", "start auto UPDATE APP APK: ");
@@ -414,6 +434,7 @@ public class AutoLogin {
                 clickStart.click();
 
             } */
+            DataSharePre.saveDataSharedString(getApplicationContext(),"version_code",schedule.getVersionName());
 
         }
 
