@@ -5,7 +5,7 @@ android {
     buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.startup.shoppyauto"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 26
         versionCode 3
         versionName "1.1"

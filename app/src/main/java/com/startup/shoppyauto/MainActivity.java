@@ -24,6 +24,7 @@ public class MainActivity<deviceId> extends AppCompatActivity {
     Button btnStart, btnStop;
     TextView deviceName;
     TextView TextVersionCode;
+    TextView fbaccounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,13 +86,16 @@ public class MainActivity<deviceId> extends AppCompatActivity {
 
     public void setDataSetting() {
         String deviceId = DataSharePre.getDataSharedString(getApplicationContext(), "deviceId");
-        String deviceStatus = DataSharePre.getDataSharedString(getApplicationContext(), "auto");
+        int fbaccountsvalue = DataSharePre.getDataSharedInt(getApplicationContext(), "fbaccounts");
         // String versionCode = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
         String versionName = DataSharePre.getDataSharedString(getApplicationContext(), "version_code");
         deviceName = (TextView) findViewById(R.id.devicename);
         deviceName.setText(deviceId);
         TextVersionCode = (TextView) findViewById(R.id.versioncodevalue);
         TextVersionCode.setText(versionName);
+//        fbaccounts = (TextView) findViewById(R.id.fbaccountsvalue);
+//        fbaccounts.setText(fbaccountsvalue);
+
     }
 
 

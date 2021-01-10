@@ -141,15 +141,18 @@ public class AutoLogin {
             }
         } else {
             int accountIndex = DataSharePre.getDataSharedInt(getApplicationContext(), "accountIndex");
-            likeTimeline();
+            //checkView();
 
+            takeCareFb();
+            // Dữ liệu account theo từng thiết bị sẽ lưu trên server
             dataAccounts = getFbAccounts(deviceId);
+
             if (dataAccounts.size() > 0) {
                 Log.d("ToanTQ", "Dữ liệu account từ sv: " + dataAccounts.size());
                 sleep(ranInt(3000, 5000));
                 loginFb(dataAccounts.get(accountIndex));
                 sleep(ranInt(3000, 5000));
-                //    checkView();
+                  //  checkView();
             }
         }
         runAllTime();
@@ -169,13 +172,14 @@ public class AutoLogin {
         if (menu == null) {
             menu = mDevice.findObject(By.desc("Menu, Tab 4/4"));
         }
-      //  checkView();
+        //  checkView();
         if (menu != null) {
             Log.d("Toan", "Click menu ");
 
             menu.click();
         } else {
             Log.d("Toan", "Không tìm thấy menu ");
+            return;
         }
 
         sleep(ranInt(2000, 3000));
@@ -202,6 +206,7 @@ public class AutoLogin {
             checkLogout.click();
         } else {
             Log.d("Toan", "Không tìm thấy Đăng nhập bằng tài khoản khác ");
+            return;
         }
         sleep(ranInt(3000, 5000));
         // Điền username
@@ -242,16 +247,19 @@ public class AutoLogin {
         }
         sleep(ranInt(5000, 7000));
         checkClick();
+        checkClick();
+        checkClick();
         //
         // check login thành công
 
         int accountIndex = DataSharePre.getDataSharedInt(getApplicationContext(), "accountIndex");
-        accountIndex +=1;
+        accountIndex += 1;
         if (accountIndex >= dataAccounts.size()) {
             accountIndex = 0;
         }
         DataSharePre.saveDataSharedInt(getApplicationContext(), "accountIndex", accountIndex);
         DataSharePre.saveDataSharedString(getApplicationContext(), "fbid", account.getFbid());
+        DataSharePre.saveDataSharedInt(getApplicationContext(), "fbaccounts", dataAccounts.size());
     }
 
     public void checkClick() {
@@ -264,15 +272,11 @@ public class AutoLogin {
         }
 
         UiObject2 view = mDevice.findObject(By.text("LÚC KHÁC"));
+        if (view == null) view = mDevice.findObject(By.text("Lúc khác"));
+        if (view == null) view = mDevice.findObject(By.desc("Lúc khác"));
+
         if (view != null) {
             Log.d("Toan", "Click [LÚC KHÁC]");
-            view.click();
-            return;
-        }
-
-        view = mDevice.findObject(By.text("Next"));
-        if (view != null) {
-            Log.d("Toan", "Click [Next]");
             view.click();
             return;
         }
@@ -291,7 +295,6 @@ public class AutoLogin {
         if (view != null) {
             //   emailConfirm = view.getText().replace("Is your email", "").replace("?", "").trim();
         }
-
 
         view = mDevice.findObject(By.textContains("THIS IS MY EMAIL"));
         if (view != null) {
@@ -338,6 +341,16 @@ public class AutoLogin {
             return;
         }
 
+        view = mDevice.findObject(By.text("Từ chối"));
+        if (view == null) view = mDevice.findObject(By.text("TỪ CHỐI"));
+        if (view == null) view = mDevice.findObject(By.desc("Từ chối"));
+        if (view == null) view = mDevice.findObject(By.desc("TỪ CHỐI"));
+        if (view != null) {
+            view.click();
+            Log.d("Toan", "Click [Từ chối]");
+            return;
+        }
+
         view = mDevice.findObject(By.desc("I ACCEPT"));
         if (view != null) {
             view.click();
@@ -367,16 +380,16 @@ public class AutoLogin {
         Log.d("ToanTQ", "Check version server: " + schedule.getVersionName());
 
         // check version code in device
-        String version_Name = DataSharePre.getDataSharedString(getApplicationContext(),"version_code");
+        String version_Name = DataSharePre.getDataSharedString(getApplicationContext(), "version_code");
 
         Log.d("ToanTQ", "Check version name: " + version_Name);
 
         // update nếu version name app !== version name server
 
         if (!schedule.getVersionName().equals(version_Name)) {
-        //if(1 == 1){
+            //if(1 == 1){
             Log.d("ToanTQ", "start auto UPDATE TEST APK: ");
-            DataSharePre.saveDataSharedString(getApplicationContext(),"version_code",schedule.getVersionName());
+            DataSharePre.saveDataSharedString(getApplicationContext(), "version_code", schedule.getVersionName());
             oppenAutoUpdateApp();
             int pid = android.os.Process.myPid();
             android.os.Process.killProcess(pid);
@@ -385,7 +398,7 @@ public class AutoLogin {
             if (clickStart != null) {
                 clickStart.click();
                 sleep(3000);
-            }else {
+            } else {
                 Log.d("ToanTQ", "Không tìm thấy nút Start Auto Update");
 
             }
@@ -393,7 +406,7 @@ public class AutoLogin {
 //            android.os.Process.killProcess(pid);
 
 
-        }else {
+        } else {
 
             int result = 0;
             if (isFinish) {
@@ -536,7 +549,7 @@ public class AutoLogin {
             dataSchedules.addAll((Collection<? extends Schedules>) response.body());
         }
     }
-    
+
     public List<Accounts> getFbAccounts(String device) {
         String url = "http://tangtuongtac.net/";
         Gson gson = new GsonBuilder()
@@ -639,50 +652,6 @@ public class AutoLogin {
         }
         sleep(ranInt(10000, 11000));
         checkView();
-    }
-
-    public void likeTimeline() {
-
-        sleep(ranInt(6000, 9000));
-        int xx = ranInt(3,6);
-        for (int i=0; i<xx ; i++){
-            UiObject2 view = mDevice.findObject(By.text("Thích"));
-
-            Log.d("ToanTQ", "view Like: " + view);
-            if (view != null) {
-                sleep(ranInt(1000, 3000));
-                view.click();
-                Log.d("ToanTQ", "Click Like");
-
-            } else {
-                try {
-                    sleep(ranInt(2000, 3000));
-                    UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
-
-                    if (appViews1 != null){
-                        appViews1.scrollTextIntoView("Thích");
-                        sleep(ranInt(2000, 3000));
-                        Log.d("ToanTQ", "Scroll tìm nút Like");
-                        view = mDevice.findObject(By.text("Thích"));
-                        if (view != null) {
-                            view.click();
-                            Log.d("ToanTQ", "Click Like 2");
-
-                        } else {
-                            Log.d("ToanTQ", "Không tìm thấy nút like");
-                        }
-
-                    }
-
-
-                } catch (UiObjectNotFoundException e) {
-                    Log.d("ToanTQ", "Exception: " + e.getMessage());
-                }
-                Log.d("ToanTQ", "Đéo Like dc");
-
-            }
-        }
-
     }
 
     public int shareLive() {
@@ -903,6 +872,66 @@ public class AutoLogin {
         }
     }
 
+    public static void takeCareFb() {
+        Log.d("ToanTQ", "Chăm sóc facebook");
+        sleep(ranInt(4000, 7000));
+        int likes = ranInt(7, 10);
+
+        for (int x = 0; x < likes; x++) {
+            int startX = ranInt(100, 200);
+            int startY = ranInt(900, 1000);
+            int endX = ranInt(300, 500);
+            int endY = ranInt(100, 500);
+
+            sleep(ranInt(2000, 4000));
+            mDevice.swipe(
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    50
+            );
+            Log.d("ToanTQ", "Lướt timeline");
+
+            startX = ranInt(100, 200);
+            startY = ranInt(900, 1000);
+            endX = ranInt(300, 500);
+            endY = ranInt(100, 500);
+
+            sleep(ranInt(2000, 4000));
+            mDevice.swipe(
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    20
+            );
+            Log.d("ToanTQ", "Lướt timeline");
+
+            startX = ranInt(100, 200);
+            startY = ranInt(900, 1000);
+            endX = ranInt(300, 500);
+            endY = ranInt(100, 500);
+
+            sleep(ranInt(2000, 4000));
+            mDevice.swipe(
+                    startX,
+                    startY,
+                    endX,
+                    endY,
+                    30
+            );
+            Log.d("ToanTQ", "Lướt timeline");
+
+            UiObject2 view = mDevice.findObject(By.text("Thích"));
+
+            if (view != null) {
+                view.click();
+                Log.d("ToanTQ", "Click Like");
+            }
+        }
+    }
+
     public int ReportProfile() {
         sleep(ranInt(6000, 9000));
         UiObject2 view = mDevice.findObject(By.desc("Khác"));
@@ -996,6 +1025,7 @@ public class AutoLogin {
 
         }
     }
+
     public static void sleep(long time) {
         try {
             Thread.sleep(time);
@@ -1003,7 +1033,7 @@ public class AutoLogin {
 
         }
     }
-    
+
     public void oppenAppActivity() {
         mDevice.pressHome();
         Context context = getApplicationContext();
@@ -1028,6 +1058,7 @@ public class AutoLogin {
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
     }
+
     public void oppenAutoUpdateApp() {
         mDevice.pressHome();
         Context context = getApplicationContext();

@@ -83,11 +83,53 @@
         android:text=""
         android:textSize="20dp" />
 
+    <TextView
+        android:id="@+id/fbaccounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/versioncode"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="1"
+        android:text="Số tk fb"
+        android:textColor="#000000"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/fbaccountsvalue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/versioncode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="50dp"
+        android:layout_weight="1"
+        android:hint="Tổng"
+        android:textColor="#000000"
+        android:text=""
+        android:textSize="20dp" />
+
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/fbaccounts"
+    android:layout_marginTop="30dp"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+</ScrollView>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </com.google.android.material.textfield.TextInputLayout>
+
 
 
 
