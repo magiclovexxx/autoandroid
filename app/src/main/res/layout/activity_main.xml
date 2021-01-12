@@ -92,7 +92,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
         android:layout_weight="1"
-        android:text="Số tk fb"
+        android:text="Số tk fb new app"
         android:textColor="#000000"
         android:textSize="20dp" />
 
