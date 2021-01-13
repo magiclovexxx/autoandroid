@@ -109,10 +109,16 @@ public class AutoLogin {
         String fbid = DataSharePre.getDataSharedString(getApplicationContext(), "fbid");
 
         ArrayList<String> accountsInDevice = new ArrayList<String>();
-       // startIntentFace(getApplicationContext(), "https://www.facebook.com/xuanxinhshop/videos/4829635650441883/");
-        sleep(2000);
-        getSchedules(deviceId, fbid);
+        Log.d("ToanTQ", "link test: " );
+        //startIntentFace(getApplicationContext(), "https://www.facebook.com/permalink.php?story_fbid=1547970462076657&id=100005911539989");
+       // fb://photo/238293151117111
+        //startIntentFace(getApplicationContext(), "fb://photo/238293151117111");
+        //startIntentFace(getApplicationContext(), "fb://album/2647412858831081?owner=100006871785979");
+        //startIntentFace(getApplicationContext(), "https://www.facebook.com/permalink.php?story_fbid=1547970462076657&id=100005911539989");
 
+        sleep(2000);
+
+        getSchedules(deviceId, fbid);
 
         if (dataSchedules.size() != 0) {
             String checkAuto = DataSharePre.getDataSharedString(getApplicationContext(), "auto");
@@ -672,6 +678,7 @@ public class AutoLogin {
         context.startActivity(intent);
 
     }
+
 
     public static void checkView() {
         Log.d("checkView", "processView: " + step);
