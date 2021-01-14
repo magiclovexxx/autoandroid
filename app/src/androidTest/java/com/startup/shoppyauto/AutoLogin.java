@@ -112,6 +112,7 @@ public class AutoLogin {
         Log.d("ToanTQ", "link test: " );
         //startIntentFace(getApplicationContext(), "https://www.facebook.com/permalink.php?story_fbid=1547970462076657&id=100005911539989");
        // fb://photo/238293151117111
+        //https://www.facebook.com/phamthao1786/photos/a.139300444349716/238293151117111/
         //startIntentFace(getApplicationContext(), "fb://photo/238293151117111");
         //startIntentFace(getApplicationContext(), "fb://album/2647412858831081?owner=100006871785979");
         //startIntentFace(getApplicationContext(), "https://www.facebook.com/permalink.php?story_fbid=1547970462076657&id=100005911539989");
@@ -390,7 +391,7 @@ public class AutoLogin {
         Log.d("ToanTQ", "start auto Facebook: ");
         String fbid = DataSharePre.getDataSharedString(getApplicationContext(), "fbid");
         Log.d("ToanTQ", "Check version server: " + schedule.getVersionName());
-
+        String linkPost2 = "";
         // check version code in device
         String version_Name = DataSharePre.getDataSharedString(getApplicationContext(), "version_code");
 
@@ -433,19 +434,56 @@ public class AutoLogin {
             }
 
             String linkPost = schedule.getTitle();
+            
             //  linkPost = "fb://profile/hoa.bingan.31337194";
             //  linkPost = "https://fb.com/profile";
-            Log.d("ToanTQ", "Link post: " + linkPost);
+            //https://www.facebook.com/ngahoang0910/
 
-            Log.d("ToanTQ", "Get Account");
+            Log.d("ToanTQ", "Bắt đầu hành động");
 
             try {
+                if(schedule.getType().equals("report_profile")){
+                    Log.d("ToanTQ", "case report_profile");
+                    String[] word = linkPost.split("id=");
+
+                    if(word.length ==2){
+
+                        Log.d("ToanTQ", "profile = id");
+                        linkPost = "fb://profile/"+word[1];
+
+                    }else{
+                        Log.d("ToanTQ", "profile = username");
+                        word = linkPost.split("/" );
+
+                        linkPost = "fb://profile/"+word[3];
+                    }
+
+                }else{
+                    //https://www.facebook.com/phamthao1786/photos/a.139300444349716/238293151117111/
+                    String[] word = linkPost.split("photos");
+                    if(word.length ==2){
+
+                        Log.d("ToanTQ", "Link dạng photos");
+                        word = linkPost.split("/" );
+                        for (int i = 0; i < (word.length); i++) {
+                            Log.d("ToanTQ", i + ": "+ word[i]);
+                        }
+                       // Log.d("ToanTQ", "word 4 :" + word[3]);
+                        linkPost = "fb://photo/"+word[6];
+
+                    }
+
+                }
+               // linkPost2 = "fb://profile/100009951004629";
+                Log.d("ToanTQ", "Link post 2: " + linkPost);
+
                 startIntentFace(getApplicationContext(), linkPost);
+
             } catch (Exception e) {
                 // This will catch any exception, because they are all descended from Exception
                 System.out.println("Error " + e.getMessage());
                 result = 0;
-                    updateResultSchedules(deviceId, fbid, schedule.getId(), result);
+               //     updateResultSchedules(deviceId, fbid, schedule.getId(), result);
 
                 sleep(ranInt(3000,6000));
                 Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
@@ -453,9 +491,9 @@ public class AutoLogin {
             }
             if (schedule.getType().equals("report_profile")) {
                 Log.d(TAG, "Bat dau report profile: ");
-                result = likePost();
+                result = ReportProfile();
                 if (result == 1) {
-                    // updateResultSchedules(deviceId, fbid, schedule.getId(), result);
+                   //  updateResultSchedules(deviceId, fbid, schedule.getId(), result);
                 }
                 sleep(ranInt(3000,6000));
                 Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
@@ -1011,14 +1049,28 @@ public class AutoLogin {
         sleep(ranInt(6000, 9000));
         UiObject2 view = mDevice.findObject(By.desc("Khác"));
 
-        Log.d("ToanTQ", "Report profile: " + view);
+        Log.d("ToanTQ", "Report profile: ");
         if (view != null) {
-            sleep(ranInt(1000, 3000));
+
             view.click();
+            sleep(ranInt(1000, 3000));
+
 
             Log.d("ToanTQ", "Report");
-
+            checkView();
+            // click report
             UiObject2 view2 = mDevice.findObject(By.desc("Khác"));
+
+            // click chọn kieur report
+             view2 = mDevice.findObject(By.desc("Tài khoản giả mạo"));
+             if(view2 != null){
+                 view2.click();
+             }
+            view2 = mDevice.findObject(By.desc("Tiếp"));
+            if(view2 != null){
+                view2.click();
+            }
+
             // checkView();
             return 1;
 
