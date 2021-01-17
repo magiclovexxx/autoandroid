@@ -107,11 +107,64 @@ public class AutoLogin {
         // String deviceId =  Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         String deviceId = DataSharePre.getDataSharedString(getApplicationContext(), "deviceId");
         String fbid = DataSharePre.getDataSharedString(getApplicationContext(), "fbid");
+        Log.d("ToanTQ", "fbid: " + fbid);
+        Log.d("ToanTQ", "deviceId: " + deviceId);
+        sleep(ranInt(9000, 10000));
+
+        UiObject2 checkAccBlock = mDevice.findObject(By.text("Xác nhận tài khoản"));
+        if(checkAccBlock != null){
+            Log.d("ToanTQ", "fbid bị khoá : " + fbid);
+            updateResultSchedules("deviceId", fbid, 0, 3);
+            return;
+        }
+
+        // Check login
+        UiObject2 checkLogout = mDevice.findObject(By.text("Đăng nhập bằng tài khoản khác"));
+        if (checkLogout == null) {
+            checkLogout = mDevice.findObject(By.desc("Mật khẩu"));
+        }
+
+        Log.d("ToanTQ", "Check logout ");
+        if (checkLogout != null) {
+            Log.d("ToanTQ", "Tất cả tài khoản bị logout ");
+            dataAccounts = getFbAccounts(deviceId);
+            sleep(ranInt(3000, 5000));
+            int accountIndex = DataSharePre.getDataSharedInt(getApplicationContext(), "accountIndex");
+
+            if (dataAccounts.size() > 0) {
+                Log.d("ToanTQ", "Dữ liệu account từ sv: " + dataAccounts.size());
+                sleep(ranInt(3000, 5000));
+                if(accountIndex>(dataAccounts.size()-1)){
+                    accountIndex=0;
+                }
+                loginFb(dataAccounts.get(accountIndex));
+                sleep(ranInt(3000, 5000));
+            }
+        }
+        UiObject2 checkNetwork = mDevice.findObject(By.text("Không thể kết nối"));
+        if (checkNetwork != null) {
+            Log.d("ToanTQ", "Lỗi kết nối mạng");
+            UiObject2 nearApp = mDevice.findObject(By.desc("Phím ứng dụng gần đây"));
+            if (nearApp != null) {
+                nearApp.click();
+                sleep(2000);
+            }
+            UiObject2 clearFb = mDevice.findObject(By.desc("Xóa bỏ Facebook."));
+            if (clearFb != null) {
+                clearFb.click();
+            }
+
+            UiObject2 homeClick = mDevice.findObject(By.desc("Trang chủ"));
+            if (clearFb != null) {
+                homeClick.click();
+            }
+        }
+        checkClick();
 
         ArrayList<String> accountsInDevice = new ArrayList<String>();
-        Log.d("ToanTQ", "link test: " );
+        // Log.d("ToanTQ", "link test: " );
         //startIntentFace(getApplicationContext(), "https://www.facebook.com/permalink.php?story_fbid=1547970462076657&id=100005911539989");
-       // fb://photo/238293151117111
+        // fb://photo/238293151117111
         //https://www.facebook.com/phamthao1786/photos/a.139300444349716/238293151117111/
         //startIntentFace(getApplicationContext(), "fb://photo/238293151117111");
         //startIntentFace(getApplicationContext(), "fb://album/2647412858831081?owner=100006871785979");
@@ -156,11 +209,17 @@ public class AutoLogin {
             dataAccounts = getFbAccounts(deviceId);
 
             if (dataAccounts.size() > 0) {
+                if (accountIndex >= dataAccounts.size()) {
+                    accountIndex = 0;
+                }
                 Log.d("ToanTQ", "Dữ liệu account từ sv: " + dataAccounts.size());
+                Log.d("ToanTQ", "Thứ tự account: " + accountIndex);
+                Log.d("ToanTQ", "Account: " + dataAccounts.get(accountIndex));
                 sleep(ranInt(3000, 5000));
+
                 loginFb(dataAccounts.get(accountIndex));
                 sleep(ranInt(3000, 5000));
-                  //  checkView();
+                //  checkView();
             }
         }
         runAllTime();
@@ -171,55 +230,74 @@ public class AutoLogin {
         Log.d("ToanTQ", "Login facebook ");
         // Logout
         Log.d("ToanTQ", "Account facebook: " + account.getUsername() + "|" + account.getPassword() + "|" + account.getTwofa());
-        startIntentFace(getApplicationContext(), "fb://root");
-        sleep(ranInt(4000, 5000));
-        UiObject2 menu = mDevice.findObject(By.desc("Menu, Tab 6/6"));
-        if (menu == null) {
-            menu = mDevice.findObject(By.desc("Menu, Tab 5/5"));
-        }
-        if (menu == null) {
-            menu = mDevice.findObject(By.desc("Menu, Tab 4/4"));
-        }
-        if (menu == null) {
-            menu = mDevice.findObject(By.desc("Menu, Tab 3/3"));
-        }
-        //  checkView();
-        if (menu != null) {
-            Log.d("Toan", "Click menu ");
 
-            menu.click();
-        } else {
-            Log.d("Toan", "Không tìm thấy menu ");
-            return;
-        }
-
-        sleep(ranInt(2000, 3000));
-        try {
-            UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
-            if (appViews1 == null) return;
-            appViews1.scrollDescriptionIntoView("Đăng xuất, Nút 1/1");
-            Log.d("ToanTQ", "Scroll tìm nút đăng xuất");
-        } catch (UiObjectNotFoundException e) {
-            Log.d("ToanTQ", "Exception: " + e.getMessage());
-        }
-        sleep(ranInt(2000, 3000));
-        UiObject2 logout = mDevice.findObject(By.desc("Đăng xuất, Nút 1/1"));
-        if (logout != null) {
-            logout.click();
-            Log.d("ToanTQ", "Click Đăng xuất");
-        }
-
-        sleep(ranInt(7000, 10000));
-        // Check logout
         UiObject2 checkLogout = mDevice.findObject(By.text("Đăng nhập bằng tài khoản khác"));
+        if (checkLogout == null) {
+
+            UiObject2 password = mDevice.findObject(By.desc("Mật khẩu"));
+            if (password == null) {
+                startIntentFace(getApplicationContext(), "fb://root");
+                sleep(ranInt(4000, 5000));
+                UiObject2 menu = mDevice.findObject(By.desc("Menu, Tab 6/6"));
+                if (menu == null) {
+                    menu = mDevice.findObject(By.desc("Menu, Tab 5/5"));
+                }
+                if (menu == null) {
+                    menu = mDevice.findObject(By.desc("Menu, Tab 4/4"));
+                }
+                if (menu == null) {
+                    menu = mDevice.findObject(By.desc("Menu, Tab 3/3"));
+                }
+                //  checkView();
+                if (menu == null) {
+                    return;
+                }
+
+                Log.d("Toan", "Click menu ");
+                menu.click();
+                sleep(ranInt(2000, 3000));
+                try {
+                    UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+                    if (appViews1 == null) return;
+                    appViews1.scrollDescriptionIntoView("Đăng xuất, Nút 1/1");
+                    Log.d("ToanTQ", "Scroll tìm nút đăng xuất");
+                } catch (UiObjectNotFoundException e) {
+                    Log.d("ToanTQ", "Exception: " + e.getMessage());
+                }
+                sleep(ranInt(2000, 3000));
+                UiObject2 logout = mDevice.findObject(By.desc("Đăng xuất, Nút 1/1"));
+                if (logout == null) {
+                    {
+                        Log.d("ToanTQ", "Lỗi Không hiện menu");
+                        UiObject2 nearApp = mDevice.findObject(By.desc("Phím ứng dụng gần đây"));
+                        nearApp.click();
+                        sleep(2000);
+
+                        UiObject2 clearFb = mDevice.findObject(By.desc("Xóa bỏ Facebook."));
+                        if (clearFb != null) {
+                            clearFb.click();
+                        }
+
+                        UiObject2 homeClick = mDevice.findObject(By.desc("Trang chủ"));
+                        if (clearFb != null) {
+                            homeClick.click();
+                        }
+                    }
+                    return;
+                }
+                logout.click();
+                Log.d("ToanTQ", "Click Đăng xuất");
+                sleep(ranInt(7000, 10000));
+            }
+        }
+        // Check logout
+        checkLogout = mDevice.findObject(By.text("Đăng nhập bằng tài khoản khác"));
         if (checkLogout != null) {
             Log.d("ToanTQ", "Click nút đăng nhập = tài khoản khác ");
             checkLogout.click();
-        } else {
-            Log.d("Toan", "Không tìm thấy Đăng nhập bằng tài khoản khác ");
-            return;
         }
         sleep(ranInt(3000, 5000));
+
         // Điền username
         UiObject2 username = mDevice.findObject(By.text("Số điện thoại hoặc email"));
         if (username != null) {
@@ -228,6 +306,7 @@ public class AutoLogin {
         }
         sleep(ranInt(1000, 2000));
         // Điền pass
+
         UiObject2 password = mDevice.findObject(By.desc("Mật khẩu"));
         if (password != null) {
             Log.d("ToanTQ", "Điền pass");
@@ -236,16 +315,23 @@ public class AutoLogin {
         sleep(ranInt(1000, 2000));
         // Click dang nhap
         checkClick();
-        sleep(ranInt(7000, 10000));
-        // Click OK
+        sleep(ranInt(10000, 15000));
+        // check tài khoản bị khoá
+
+        UiObject2 checkAccBlock = mDevice.findObject(By.text("Xác nhận tài khoản"));
+        if(checkAccBlock != null){
+            Log.d("ToanTQ", "fbid bị khoá : " + account.getUsername());
+            updateResultSchedules("deviceId", account.getUsername(), 0, 3);
+            return;
+        }
+
         checkClick();
-        sleep(ranInt(3000, 5000));
-        // Check login 2fa
         UiObject2 check2Fa = mDevice.findObject(By.text("Mã đăng nhập"));
         if (check2Fa != null) {
-            faCode = getCode(account.getTwofa());
+            String key = account.getTwofa();
+            Log.d("ToanTQ", "Max secret: " + key);
+            faCode = getCode(key);
             Log.d("ToanTQ", "mã 2fa: " + faCode);
-
             if (check2Fa != null) {
                 check2Fa.setText(faCode);
                 UiObject2 checkContinue = mDevice.findObject(By.desc("Tiếp tục"));
@@ -256,11 +342,17 @@ public class AutoLogin {
                 }
             }
         }
-        sleep(ranInt(10000, 15000));
+
+        sleep(ranInt(7000, 10000));
+        // Click OK
+        checkClick();
+        sleep(ranInt(3000, 5000));
+        // Check login 2fa
+
         checkClick();
         checkClick();
         checkClick();
-        //
+
         // check login thành công
 
         int accountIndex = DataSharePre.getDataSharedInt(getApplicationContext(), "accountIndex");
@@ -271,6 +363,8 @@ public class AutoLogin {
         DataSharePre.saveDataSharedInt(getApplicationContext(), "accountIndex", accountIndex);
         DataSharePre.saveDataSharedString(getApplicationContext(), "fbid", account.getFbid());
         DataSharePre.saveDataSharedInt(getApplicationContext(), "fbaccounts", dataAccounts.size());
+
+
     }
 
     public void checkClick() {
@@ -289,7 +383,7 @@ public class AutoLogin {
             return;
         }
 
-         view = mDevice.findObject(By.text("LÚC KHÁC"));
+        view = mDevice.findObject(By.text("LÚC KHÁC"));
         if (view == null) view = mDevice.findObject(By.text("Lúc khác"));
         if (view == null) view = mDevice.findObject(By.desc("Lúc khác"));
 
@@ -351,7 +445,6 @@ public class AutoLogin {
             Log.d("Toan", "Click [Never]");
             return;
         }
-
 
 
         view = mDevice.findObject(By.text("Từ chối"));
@@ -434,7 +527,7 @@ public class AutoLogin {
             }
 
             String linkPost = schedule.getTitle();
-            
+
             //  linkPost = "fb://profile/hoa.bingan.31337194";
             //  linkPost = "https://fb.com/profile";
             //https://www.facebook.com/ngahoang0910/
@@ -442,39 +535,36 @@ public class AutoLogin {
             Log.d("ToanTQ", "Bắt đầu hành động");
 
             try {
-                if(schedule.getType().equals("report_profile")){
+                if (schedule.getType().equals("report_profile")) {
                     Log.d("ToanTQ", "case report_profile");
                     String[] word = linkPost.split("id=");
 
-                    if(word.length ==2){
+                    if (word.length == 2) {
 
                         Log.d("ToanTQ", "profile = id");
-                        linkPost = "fb://profile/"+word[1];
+                        linkPost = "fb://profile/" + word[1];
 
-                    }else{
+                    } else {
                         Log.d("ToanTQ", "profile = username");
-                        word = linkPost.split("/" );
+                        word = linkPost.split("/");
 
-                        linkPost = "fb://profile/"+word[3];
+                        linkPost = "fb://profile/" + word[3];
                     }
 
-                }else{
+                } else {
                     //https://www.facebook.com/phamthao1786/photos/a.139300444349716/238293151117111/
                     String[] word = linkPost.split("photos");
-                    if(word.length ==2){
+                    if (word.length == 2) {
 
                         Log.d("ToanTQ", "Link dạng photos");
-                        word = linkPost.split("/" );
-                        for (int i = 0; i < (word.length); i++) {
-                            Log.d("ToanTQ", i + ": "+ word[i]);
-                        }
-                       // Log.d("ToanTQ", "word 4 :" + word[3]);
-                        linkPost = "fb://photo/"+word[6];
+                        word = linkPost.split("/");
+
+                        linkPost = "fb://photo/" + word[6];
 
                     }
 
                 }
-               // linkPost2 = "fb://profile/100009951004629";
+                // linkPost2 = "fb://profile/100009951004629";
                 Log.d("ToanTQ", "Link post 2: " + linkPost);
 
                 startIntentFace(getApplicationContext(), linkPost);
@@ -483,9 +573,9 @@ public class AutoLogin {
                 // This will catch any exception, because they are all descended from Exception
                 System.out.println("Error " + e.getMessage());
                 result = 0;
-               //     updateResultSchedules(deviceId, fbid, schedule.getId(), result);
+                //     updateResultSchedules(deviceId, fbid, schedule.getId(), result);
 
-                sleep(ranInt(3000,6000));
+                sleep(ranInt(3000, 6000));
                 Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
                 return;
             }
@@ -493,9 +583,9 @@ public class AutoLogin {
                 Log.d(TAG, "Bat dau report profile: ");
                 result = ReportProfile();
                 if (result == 1) {
-                   //  updateResultSchedules(deviceId, fbid, schedule.getId(), result);
+                    //  updateResultSchedules(deviceId, fbid, schedule.getId(), result);
                 }
-                sleep(ranInt(3000,6000));
+                sleep(ranInt(3000, 6000));
                 Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
             }
 
@@ -505,7 +595,7 @@ public class AutoLogin {
                 if (result == 1) {
                     updateResultSchedules(deviceId, fbid, schedule.getId(), result);
                 }
-                sleep(ranInt(3000,6000));
+                sleep(ranInt(3000, 6000));
                 Log.d(TAG, "Dữ liệu gửi lên sv : " + dataUpdateResultSchedules);
             }
 
@@ -521,7 +611,7 @@ public class AutoLogin {
                     ArrayMessenger = dataSchedules.get(0).getMessage().toString().split("\n");
                     // Lấy ngẫu nhiên 1 comment
                     Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
-                    result = commentPost(ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
+                    result = commentPost(ArrayMessenger[Integer.parseInt(dataSchedules.get(0).getCountNumber())]);
                 } else {
 
                     //   Log.d(TAG, "Tin nhan seeding: " + ArrayMessenger[ranInt(0, ArrayMessenger.length - 1)]);
@@ -562,7 +652,7 @@ public class AutoLogin {
                     updateResultSchedules(deviceId, fbid, schedule.getId(), shareResult);
                 }
             }
-            sleep(ranInt(3000,6000));
+            sleep(ranInt(3000, 6000));
             // autoView(schedule);
         }
     }
@@ -669,7 +759,6 @@ public class AutoLogin {
     }
 
     public String getCode(String key) {
-        //    faCode = "";
 
         Log.d("ToanTQ", "Start get code 2fa");
         String facodeUrl = "http://facode.tranquoctoan.com:8000/";
@@ -692,7 +781,7 @@ public class AutoLogin {
         try {
             response = apiService.get2FaCode(key).execute();
             facode = (String) response.body();
-            //   Log.d("ToanTQ", "2fa key: " + facode);
+
         } catch (IOException e) {
             Log.d("ToanTQ", "exception get facode: " + e.toString());
             e.printStackTrace();
@@ -829,7 +918,7 @@ public class AutoLogin {
         UiObject2 edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
         if (edtSearch != null) {
             edtSearch.setText(messageComment);
-        }else{
+        } else {
             return 0;
         }
 
@@ -841,7 +930,7 @@ public class AutoLogin {
             edtSent.click();
             Log.d("ToanTQ", "Click Gửi");
 
-        }else{
+        } else {
             return 0;
         }
         //checkView();
@@ -1062,12 +1151,12 @@ public class AutoLogin {
             UiObject2 view2 = mDevice.findObject(By.desc("Khác"));
 
             // click chọn kieur report
-             view2 = mDevice.findObject(By.desc("Tài khoản giả mạo"));
-             if(view2 != null){
-                 view2.click();
-             }
+            view2 = mDevice.findObject(By.desc("Tài khoản giả mạo"));
+            if (view2 != null) {
+                view2.click();
+            }
             view2 = mDevice.findObject(By.desc("Tiếp"));
-            if(view2 != null){
+            if (view2 != null) {
                 view2.click();
             }
 
@@ -1083,61 +1172,71 @@ public class AutoLogin {
 
         if (messageComment.equals(null)) return 0;
         sleep(ranInt(1000, 3000));
-        UiObject2 view = mDevice.findObject(By.text("Bình luận"));
-        if (view != null) {
-            view.click();
-            Log.d("ToanTQ", "Click Bình luận");
-            sleep(ranInt(1000, 3000));
+        UiObject2 edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
 
-            UiObject2 edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
-            if (edtSearch != null) {
-                edtSearch.setText(messageComment);
-            }
+        if (edtSearch != null) {
+            edtSearch.setText(messageComment);
             sleep(ranInt(1000, 3000));
-
             UiObject2 edtSent = mDevice.findObject(By.desc("Gửi"));
 
             if (edtSent != null) {
                 edtSent.click();
                 Log.d("ToanTQ", "Click Gửi");
             }
-
         } else {
-            Log.d("ToanTQ", "Scroll tim nut comment");
-            try {
-                UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
-                if (appViews1 == null) return 0;
-                appViews1.scrollTextIntoView("Bình luận");
-                sleep(ranInt(2000, 3000));
-                Log.d("ToanTQ", "Scroll tìm nút comment");
-            } catch (UiObjectNotFoundException e) {
-                Log.d("ToanTQ", "Exception: " + e.getMessage());
-            }
+            UiObject2 view = mDevice.findObject(By.text("Bình luận"));
 
-            view = mDevice.findObject(By.text("Bình luận"));
             if (view != null) {
                 view.click();
                 Log.d("ToanTQ", "Click Bình luận");
                 sleep(ranInt(1000, 3000));
-
-                UiObject2 edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
+                edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
                 if (edtSearch != null) {
                     edtSearch.setText(messageComment);
                 }
                 sleep(ranInt(1000, 3000));
-
                 UiObject2 edtSent = mDevice.findObject(By.desc("Gửi"));
-
                 if (edtSent != null) {
                     edtSent.click();
                     Log.d("ToanTQ", "Click Gửi");
                 }
-
-                sleep(ranInt(1000, 3000));
-
             } else {
-                Log.d("ToanTQ", "Không tìm thấy nút comment");
-                return 0;
+                Log.d("ToanTQ", "Scroll tim nut comment");
+                try {
+                    UiScrollable appViews1 = new UiScrollable(new UiSelector().scrollable(true));
+                    if (appViews1 == null) return 0;
+                    appViews1.scrollTextIntoView("Bình luận");
+                    sleep(ranInt(2000, 3000));
+                    Log.d("ToanTQ", "Scroll tìm nút comment");
+                } catch (UiObjectNotFoundException e) {
+                    Log.d("ToanTQ", "Exception: " + e.getMessage());
+                }
+
+                view = mDevice.findObject(By.text("Bình luận"));
+                if (view != null) {
+                    view.click();
+                    Log.d("ToanTQ", "Click Bình luận");
+                    sleep(ranInt(1000, 3000));
+
+                    edtSearch = mDevice.findObject(By.text("Viết bình luận..."));
+                    if (edtSearch != null) {
+                        edtSearch.setText(messageComment);
+                    }
+                    sleep(ranInt(1000, 3000));
+
+                    UiObject2 edtSent = mDevice.findObject(By.desc("Gửi"));
+
+                    if (edtSent != null) {
+                        edtSent.click();
+                        Log.d("ToanTQ", "Click Gửi");
+                    }
+
+                    sleep(ranInt(1000, 3000));
+
+                } else {
+                    Log.d("ToanTQ", "Không tìm thấy nút comment");
+                    return 0;
+                }
             }
         }
         return 1;
