@@ -326,6 +326,7 @@ public class AutoLogin {
         }
 
         checkClick();
+        checkClick();
         UiObject2 check2Fa = mDevice.findObject(By.text("Mã đăng nhập"));
         if (check2Fa != null) {
             String key = account.getTwofa();
